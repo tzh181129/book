@@ -1,0 +1,144 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">个人资料</div>
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form" action="" lay-filter="component-form-group" id="from">
+                <script id="editProfile" type="text/html">
+                <div class="layui-form-item">
+                    <div class="layui-upload" style="float:left;">
+                        {{# if(d.image) { }}
+                        <img id="avatar" style="width:120px;height:120px;border-radius: 8px;" src="{{ d.image }}">
+                        {{# }else{ }}
+                        <img id="avatar" style="width:120px;height:120px;border-radius: 8px;" src="lib/tplay/images/default_family.jpg">
+                        {{# } }}
+                        <!-- <div class="layui-upload-list">
+                            <img class="layui-upload-img" id="demo1">
+                            <p id="demoText"></p>
+                        </div> -->
+                        <p style="padding-top:5px;padding-left:26px;"><a id="test1" style="cursor: pointer;color:#06C;">上传图片</a></p>
+                    </div>
+
+                    <div style="margin-left:15px;float:left;padding-top:20px;">
+                        <p>登录账号：{{ d.username }}</p>
+                        <p>注册时间：{{ d.create_time }}</p>
+                    </div>
+                </div>
+
+                <!-- <div class="layui-form-item">
+                  <label class="layui-form-label">旧密码</label>
+                  <div class="layui-input-block">
+                    <input type="password" name="old_pwd" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">新密码</label>
+                  <div class="layui-input-block">
+                    <input type="password" name="password" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">确认新密码</label>
+                  <div class="layui-input-block">
+                    <input type="password" name="password_confirm" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+                  </div>
+                </div> -->
+                
+                <!-- <div class="layui-form-item">
+                  <div class="layui-input-block">
+                    <div class="">
+                      <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                </div> -->
+                </script>
+                <div id="edit_view"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'layer','tplay','apiconfig', 'upload'], function(){
+        var $ = layui.$,
+        layer = layui.layer,
+        form = layui.form,
+        tplay = layui.tplay,
+        laytpl = layui.laytpl,
+        upload = layui.upload,
+        config = layui.apiconfig;
+  
+        /* 自定义验证规则 */
+        form.verify({
+            pass: [/(.+){6,12}$/, '密码必须6到18位'],
+            content: function(value)
+            {
+                layedit.sync(editIndex);
+            }
+        });
+
+        tplay.ajax({
+            url: config.domain+"/admin/admin/profile",
+            type: 'get',
+            data: {},
+            async: false,
+            success:function(res)
+            {
+                if(res.code == 1)
+                {
+                    var editTpl = $('#editProfile').html(),
+                    view = document.getElementById('edit_view');
+                    laytpl(editTpl).render(res.data, function(html)
+                    {
+                        view.innerHTML = html;
+                    });
+                } 
+                else 
+                {
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1',
+            url: '/admin/admin/editAvatar',
+            done: function(res)
+            {
+                console.log(res)
+                //如果上传失败
+                if(res.code < 0)
+                {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                $('#avatar').attr('src', res.data); //图片链接（base64）
+                // $('#avatar').after('<input type="hidden" value='+res.data+' name="img">');
+            },
+            error: function()
+            {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function()
+                {
+                    uploadInst.upload();
+                });
+            }
+        });
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      tplay.ajax({
+        url:config.domain+"/admin/admin/editPwd",
+        type:"post",
+        data:$('#from').serialize(),
+        success:function(res){
+          layer.msg(res.msg);
+        }
+      })
+      return false;
+    });
+  });
+</script>

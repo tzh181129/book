@@ -1,0 +1,104 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">门户菜单</div>
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group" id="from">
+        <div class="layui-form-item">
+          <label class="layui-form-label">名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">链接</label>
+          <div class="layui-input-block">
+            <input type="text" name="href" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <script id="menusList" type="text/html">
+          <div class="layui-form-item">
+            <label class="layui-form-label">分组</label>
+              <div class="layui-input-block">
+                <select name="index_menu_cate_id" lay-filter="menuCate">
+                    <option value="" selected>请选择</option>
+                  {{# for(var i = 0;i< d.data.length;i++){ }}
+                    <option value="{{ d.data[i].id }}">{{ d.data[i].name }}</option>
+                  {{# } }}
+                </select> 
+              </div>
+          </div>
+        </script>
+        <div id="add_menu"></div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级菜单</label>
+            <div class="layui-input-block">
+                <select name="pid" id="menus">
+                    <option value="" selected>请先选择分组</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">新窗口打开</label>
+          <div class="layui-input-block">
+            <input type="radio" name="is_target" value="1" title="是">
+            <input type="radio" name="is_target" value="0" title="否" checked>
+          </div>
+        </div>
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <div class="">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['form', 'layer','tplay','apiconfig','laytpl',], function(){
+    var $ = layui.$
+    ,layer = layui.layer
+    ,form = layui.form
+    ,laytpl = layui.laytpl
+    ,tplay = layui.tplay
+    ,config = layui.apiconfig;
+
+    var cates;
+    tplay.ajax({url:config.domain+"/admin/index/indexMenuCate",async:false,success:function(res){cates = res;}});
+    var getTpl = $('#menusList').html()
+    ,view = document.getElementById('add_menu');
+    laytpl(getTpl).render(cates, function(html){
+      view.innerHTML = html;
+    });
+
+    form.render(null, 'component-form-group');
+
+    form.on('select(menuCate)', function(data){
+        var menus;
+        tplay.ajax({url:config.domain+"/admin/index/indexMenu?cate_id="+data.value,async:false,success:function(res){menus = res;}});
+        var optionstring = "";
+        $.each(menus.data, function(i,item){
+            optionstring += "<option value=\"" + item.id + "\" >" + item.str + item.name + "</option>";
+        });
+        $("#menus").html('<option value=""></option><option value="0">作为顶级菜单</option>' + optionstring);
+        form.render('select'); 
+    });
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      tplay.ajax({
+        url:config.domain+"/admin/portal/addMenu",
+        type:"post",
+        data:$('#from').serialize(),
+        success:function(res){
+          layer.msg(res.msg);
+        }
+      })
+      return false;
+    });
+  });
+</script>

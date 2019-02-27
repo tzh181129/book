@@ -1,0 +1,197 @@
+<script>
+    $(function () {
+        $('.gotop').click(function () {
+            $('html, body').animate({ scrollTop: 0 }, 500);
+            return false;
+        });
+        $(window).on('scroll', function () {
+            var $scroll = $(this).scrollTop();
+            if ($scroll >= 300) {
+                $(".gotop").show();
+              
+            } else {
+                $(".gotop").hide();
+
+            }
+        });
+    });
+</script>
+
+<a class="gotop" href="" style=""><i></i><span>置顶</span></a>
+
+
+<div class="qiu_footer">
+    <p><i>装修咨询热线：</i><span><a href="tel:400-0731-889">400-0731-889</a></span></p>
+    <div class="qiu_footer_c">
+        <ul>
+            <li>
+                <a href="/Mobile" id="qiu_footer1">
+                    <img src="__XYSMIMG__/qiu_pc.jpg" alt="">
+                    <span>触屏端</span>
+                </a>
+            </li>
+            <li>
+                <a href="/" id="qiu_footer2">
+                    <img src="__XYSMIMG__/qiu_iphone.jpg" alt="">
+
+                    <span>电脑端</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Mobile/About" id="qiu_footer3">
+                    <img src="__XYSMIMG__/qiu_apple.jpg" alt="">
+                    <span>关于苹果</span>
+                </a>
+            </li>
+        </ul>
+        <div class="clear"></div>
+        <p>湘ICP备11016765号&nbsp;&nbsp;&copy; 湖南苹果装饰设计工程有限公司</p>
+    </div>
+    <div class="qiu_footer_b">
+        <ul>
+            <li>
+                <a href="/Mobile" id="qiu_footer4">
+                    <img src="__XYSMIMG__/footer_person.png" alt="">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Mobile/Free/LiangFang" id="qiu_footer5">
+                    <img src="__XYSMIMG__/qiu_room.jpg" alt="">
+                    <span>免费量房</span>
+                </a>
+            </li>
+        </ul>
+        <div class="qiu_footer_img">
+            <a onclick="LR_HideInvite();openZoosUrl();return false;" id="qiu_footer6"><img src="__XYSMIMG__/zixun.gif" alt=""></a>
+        </div>
+        <ul>
+            <li>
+                <a onclick="pup_tk_open();" id="qiu_footer7">
+                    <!--<img src="__XYSMIMG__/qiu_free_tel.jpg" alt="">-->
+                    <img src="__XYSMIMG__/qiu_offer.jpg" alt="">
+                    <span>快速报价</span>
+                </a>
+            </li>
+            <li>
+                <a href="tel:400-0731-889" id="qiu_footer8">
+                    <img src="__XYSMIMG__/dianhua.gif" alt="">
+                    <span>拨打电话</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+<div class="m_pup_tk">
+    <div class="m_pup_tkcontent">
+        
+        <div class="m_pup_tkclose"><img src="__XYSMIMG__/m_tkclose.png"></div>
+        <h2>我家装修要花多少钱？</h2>
+        <form id="m_pup_baojia">
+            <input name="RealName" type="hidden" value="匿名" />
+            <input type="tel" name="Areas" placeholder="请输入您的房屋面积" maxlength="20"><br>
+            <select name="" class="m_bj_shi">
+                <option value="1">1室</option>
+                <option value="2">2室</option>
+                <option value="3">3室</option>
+                <option value="4">4室</option>
+                <option value="5">5室</option>
+                <option value="6">6室</option>
+            </select>
+            <select name="" class="m_bj_ting">
+                <option value="1">1厅</option>
+                <option value="2">2厅</option>
+                <option value="3">3厅</option>
+                <option value="4">4厅</option>
+                <option value="5">5厅</option>
+                <option value="6">6厅</option>
+            </select>
+            <select name="" class="m_bj_chu">
+                <option value="1">1厨</option>
+                <option value="2">2厨</option>
+                <option value="3">3厨</option>
+            </select>
+            <select name="" class="m_bj_wei">
+                <option value="1">1卫生间</option>
+                <option value="2">2卫生间</option>
+                <option value="3">3卫生间</option>
+                <option value="4">4卫生间</option>
+                <option value="5">5卫生间</option>
+                <option value="6">6卫生间</option>
+            </select>
+            <select name="" class="m_bj_yangtai">
+                <option value="1">1阳台</option>
+                <option value="2">2阳台</option>
+                <option value="3">3阳台</option>
+                <option value="4">4阳台</option>
+                <option value="5">5阳台</option>
+                <option value="6">6阳台</option>
+            </select>
+            <input type="tel" name="Telephone" placeholder="输入手机号获取预算明细" maxlength="11"><br>
+            <button type="button" onclick="apply_ajax_close('#m_pup_baojia', '弹窗_快速报价', '.m_pup_tk');" id="button_m_pup_tk">开始计算</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $(".m_pup_tkclose").click(function () {
+            $(".m_pup_tk").css("display", "none");
+        });
+
+        $("#m_pup_baojia").find("input[name=Areas]").on('keyup', function () {
+            selectAreas($(this).val(), this);
+        });
+    });
+
+    function pup_tk_open() {
+        $(".m_pup_tk").css("display", "block");
+    }
+
+    function selectAreas(square, squareEle) {
+        var square = Number(square);
+        if (square + '' == 'NaN' || $(squareEle).val() == '') {
+            return
+        };
+        if (square < 60) {
+            $('.m_pup_tk .m_bj_shi').val(1);
+            $('.m_pup_tk .m_bj_ting').val(1);
+            $('.m_pup_tk .m_bj_chu').val(1);
+            $('.m_pup_tk .m_bj_wei').val(1);
+            $('.m_pup_tk .m_bj_yangtai').val(1);
+        } else if (square >= 60 && square < 90) {
+            $('.m_pup_tk .m_bj_shi').val(2);
+            $('.m_pup_tk .m_bj_ting').val(1);
+            $('.m_pup_tk .m_bj_chu').val(1);
+            $('.m_pup_tk .m_bj_wei').val(1);
+            $('.m_pup_tk .m_bj_yangtai').val(1);
+        } else if (square >= 90 && square < 150) {
+            $('.m_pup_tk .m_bj_shi').val(3);
+            $('.m_pup_tk .m_bj_ting').val(2);
+            $('.m_pup_tk .m_bj_chu').val(1);
+            $('.m_pup_tk .m_bj_wei').val(2);
+            $('.m_pup_tk .m_bj_yangtai').val(1);
+        }
+        else if (square >= 150) {
+            $('.m_pup_tk .m_bj_shi').val(4);
+            $('.m_pup_tk .m_bj_ting').val(2);
+            $('.m_pup_tk .m_bj_chu').val(1);
+            $('.m_pup_tk .m_bj_wei').val(2);
+            $('.m_pup_tk .m_bj_yangtai').val(2);
+        }
+    }
+
+</script>
+
+<script>
+    // $(function(){
+    //     setTimeout(function () {
+    //     $('.m_pup_tk').fadeIn(500);
+    //     }, 5000);
+    // });
+
+</script>

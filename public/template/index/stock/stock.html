@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>库存-沈阳太珩模具材料有限公司</title>
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/base.css">
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/index.css">
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/aos.css">
+</head>
+<body>
+<div class="main">
+    <!--导航栏-->
+    {include file="public/head"}
+    <!--主体-->
+    <div class="store-first">
+        <div class="product7 product2"  data-aos="fade-up" data-aos-easing="ease" data-aos-delay="400">
+            <div class="tab-right">
+                <table width="100%" cellpadding="2px" cellspacing="0" align="center" class="tab-catalog">
+                    <tbody>
+                    <tr>
+                        <td colspan="5">太珩模具库存信息</td>
+                    </tr>
+                        <tr>
+                            <td>钢种</td>
+                            <td>表面状态</td>
+                            <td>厚度/直径(mm)</td>
+                            <td>宽度(mm)</td>
+                            <td>价格</td>
+                        </tr>
+                        {foreach $stock as $vo}
+                        <tr >
+                            <td>{$vo.title}</td>
+                            <td>{$vo.tag}</td>
+                            <td>{$vo.author}</td>
+                            <td>{$vo.num}</td>
+                            <td>{$vo.description}</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <!--底部-->
+    {include file="public/foot"}
+</div>
+
+<script type="text/javascript" src="__XYSJS__/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="__XYSJS__/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="__XYSJS__/index.js"></script>
+<script type="text/javascript" src="__XYSJS__/aos.js" charset="utf-8"></script>
+<script type="text/javascript">jQuery(".nav").slide({ type:"menu",  titCell:".m", targetCell:".sub", effect:"slideDown", delayTime:300, triggerTime:100,returnDefault:true});</script>
+
+<script type="text/javascript">
+    AOS.init({
+        easing:'ease-out-back',
+        duration:800
+    });
+
+    document.body.addEventListener('touchstart',function(){
+        var mobileHover=function(){
+            $('*').on('touchstart',function(){
+                $(this).trigger('hover');
+            }).on('touched',function(){
+                $(this).trigger('hover');
+            })
+        }
+    });
+</script>
+</body>
+</html>

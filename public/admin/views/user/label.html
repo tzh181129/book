@@ -1,0 +1,321 @@
+<div class="tplay-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">标签信息</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show tplay-btn">
+                <button class="layui-btn layui-btn-normal" data-type="course" data-events="add"><i class="layui-icon layui-icon-add-circle"></i>添加标签</button>
+                <table id="data-list" lay-filter="data-list">
+                    <script type="text/html" id="op_admin_user">
+                        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">
+                            <i class="layui-icon layui-icon-edit"></i>修改
+                        </a>
+                        <!-- <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">
+                            <i class="layui-icon layui-icon-delete"></i>删除
+                        </a> -->
+                    </script>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="addDataTpl" type="text/html">
+    <form class="layui-form" lay-filter="add-data" id="add-data" style="padding-right: 30px">
+        <div style="margin-top:20px;"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">标签名称</label>
+            <div class="layui-input-block">
+                <input type="text" required name="name" placeholder="请输入段位名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="number" required name="sort" placeholder="0" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="data-add-submit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script id="editDataTpl" type="text/html">
+    <form class="layui-form" lay-filter="edit-data" id="edit-data" style="padding-right: 30px">
+        <div style="margin-top:20px;"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">问题内容</label>
+            <div class="layui-input-block">
+                <textarea name="text" class="layui-textarea">{{ d.text }}</textarea>
+                <input type="hidden" name="id" value="{{ d.id }}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">问题类型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="1" title="真题练习" {{# if(d.type == 1){ }}checked{{# } }}>
+                <input type="radio" name="type" value="2" title="模拟练习" {{# if(d.type == 2){ }}checked{{# } }}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">问题状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="启用" {{# if(d.status == 1){ }}checked{{# } }}>
+                <input type="radio" name="status" value="0" title="关闭" {{# if(d.status == 0){ }}checked{{# } }}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="number" required name="sort" value="{{ d.sort }}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="data-edit-submit">立即提交</button>
+                <!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/javascript">
+layui.use(['form', 'upload', 'laytpl','table', 'element','tplay','route','apiconfig'], function(){
+    var $ = layui.$
+    ,table = layui.table
+    ,form = layui.form
+    ,element = layui.element
+    ,tplay = layui.tplay
+    ,route = layui.route
+    ,laytpl = layui.laytpl
+    ,upload = layui.upload
+    ,config = layui.apiconfig;
+
+    form.render(null, 'component-form-course');
+
+    var lesson_id = 0;
+    if (route.params()) 
+    {
+        lesson_id = route.params().lesson_id;
+    }
+
+    //监听Tab切换，以改变地址hash值
+    element.on('tab(test1)', function(){
+        location.hash = 'test1='+ this.getAttribute('lay-id');
+    });
+
+    dataList();
+
+    function dataList()
+    {
+        //管理员
+        table.render({
+            elem: '#data-list'
+            ,url: config.domain+'/admin/user/label'
+            ,where: {access_token: layui.data('tplay').access_token, lesson_id: lesson_id}
+            ,page: true
+            ,limit:10
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', width:80}
+                ,{field: 'name', title: '标签名称', width:150, align:'center'}
+                ,{field: 'sort', title: '排序', width:120, align:'center'}
+                ,{field: 'create_time', title: '添加时间'}
+                ,{fixed: 'right', title: '操作', width:150, align:'center', toolbar: '#op_admin_user'}
+            ]]
+            // ,skin: 'line'
+        });
+    }
+
+    var add_layer;
+
+    //事件处理
+    var events = 
+    {
+        add: function(othis, type)
+        {
+            var paragraph;
+            var result;
+            tplay.ajax({
+                url:config.domain+"/admin/user/addLabel",
+                // data:{id:route.params().id},
+                type:'get',
+                async:false,
+                success:function(res)
+                {
+                    result = res;
+                }
+            });
+
+            if (result.code == 1) 
+            {
+                paragraph = result.data;
+            }
+            else
+            {
+                layer.msg(result.msg);
+                return;
+            }
+
+            var getTpl = $('#addDataTpl').html();
+            laytpl(getTpl).render(paragraph, function(html)
+            {
+                add_layer = layer.open({
+                    title: '添加标签',
+                    type: 1,
+                    skin: 'layui-layer-demo',
+                    // skin: 'layui-layer-rim', //加上边框
+                    area: ['460px', 'auto'], //宽高
+                    content: html,
+                });
+            });
+            
+            form.render(null, 'add-data');
+        },
+        delall: function(othis, type)
+        {
+            layer.confirm('确定要一键删除所有题库吗？', function(index){
+                tplay.ajax({
+                    url:config.domain+"/admin/user/delallLargearea",
+                    // data:{id:route.params().id},
+                    type:'get',
+                    async:false,
+                    success:function(res)
+                    {
+                        layer.msg(res.msg);
+                        dataList();
+                    }
+                });
+            });
+            
+        }
+    };
+
+    //区分各选项卡中的表格
+    // var tabs = {
+    //     course: {
+    //       text: '免费课程'
+    //       ,id: 'data-list'
+    //     }
+    // };
+  
+    $('.tplay-btn .layui-btn').on('click', function(){
+        var othis = $(this)
+        ,thisEvent = othis.data('events')
+        ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    var edit_layer;
+
+    //监听工具条
+    table.on('tool(data-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+        if(layEvent === 'edit')
+        { //修改
+            tplay.ajax({
+                url:config.domain+"/admin/user/editLabel",
+                type:'get',
+                // data:{id:route.params().id},
+                data:data,
+                async:false,
+                success:function(res)
+                {
+                    console.log(res)
+                    if(res.code == 1)
+                    {
+                        var editTpl = $('#editDataTpl').html();
+                        laytpl(editTpl).render(res.data, function(html)
+                        {
+                            // view.innerHTML = html;
+                            edit_layer = layer.open({
+                                title: '编辑标签',
+                                type: 1,
+                                skin: 'layui-layer-demo',
+                                // skin: 'layui-layer-rim', //加上边框
+                                area: ['460px', 'atuo'], //宽高
+                                content: html,
+                            });
+                        });
+                        form.render(null, 'edit-data');
+                    } 
+                    else 
+                    {
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+            
+        } 
+        else if(layEvent === 'del')
+        { //删除
+            layer.confirm('真的删除行么', function(index){
+                tplay.ajax({
+                    url:config.domain+"/admin/user/delLargearea",
+                    type:"post",
+                    data:{id:data.id},
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 1){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);
+                        }
+                    }
+                })
+            });
+        }
+    });
+
+    //监听工具条
+    form.on('submit(data-add-submit)', function(data)
+    {
+        tplay.ajax({
+            url:config.domain+"/admin/user/addLabel",
+            data:$('#add-data').serialize(),
+            success:function(res){
+                layer.msg(res.msg);
+                if(res.code == 1)
+                {
+                    layer.close(add_layer);
+                    dataList();
+                }
+            }
+        })
+        return false;
+    });
+
+    form.on('submit(data-edit-submit)', function(data){
+        tplay.ajax({
+            url:config.domain+"/admin/user/editLabel",
+            type:"post",
+            data:$('#edit-data').serialize(),
+            success:function(res)
+            {
+                layer.msg(res.msg);
+                if(res.code == 1)
+                {
+                    layer.close(edit_layer);
+                    dataList();
+                }
+            }
+        })
+        return false;
+    });
+
+});
+</script>

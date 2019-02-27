@@ -1,0 +1,150 @@
+<div class="tplay-body">
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">分组管理</li>
+        <!-- <li>权限组</li> -->
+    </ul>
+    <div class="layui-tab-content">
+        <div class="tplay-btn">
+            <!-- <blockquote class="layui-elem-quote">支持点击单元格进行编辑修改</blockquote> -->
+
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="add_group">新增</button> -->
+            <button class="layui-btn layui-btn-normal" data-type="group" data-events="add_group"><i class="layui-icon layui-icon-add-circle"></i>新增分组</button>
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="del_group">批量删除</button> -->
+            <button class="layui-btn layui-btn-danger" data-type="group" data-events="del_group"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+
+            <table id="tplay-admin-group" lay-filter="tplay-admin-group">
+                <script type="text/html" id="admin_group_status">
+                  {{#  if(d.status == 1){ }}
+                    <span style="color:#1E9FFF">正常 </span>  
+                  {{#  } else { }}
+                    <span style="color:#FF5722">禁用 </span> 
+                  {{#  } }}
+                </script>
+                <script type="text/html" id="admin_group_menu">
+                    <!-- <div class="layui-btn-group"> -->
+                        <!-- <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+                        <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del">删除</a> -->
+
+                        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">
+                            <i class="layui-icon layui-icon-edit"></i>修改
+                        </a>
+                        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">
+                            <i class="layui-icon layui-icon-delete"></i>删除
+                        </a>
+                    <!-- </div> -->
+                </script>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig'], function(){
+    var $ = layui.$
+    ,table = layui.table
+    ,element = layui.element
+    ,tplay = layui.tplay
+    ,config = layui.apiconfig;
+
+    //管理员
+    table.render({
+        elem: '#tplay-admin-group'
+        ,url: config.domain+'/admin/admin/groupList'
+        ,page: true
+        ,limit:15
+        ,cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            ,{field: 'id', title: 'ID'}
+            ,{field: 'title', title: '标题'}
+            ,{field: 'create_time', title: '创建时间'}
+            ,{field: 'update_time', title: '最后修改时间'}
+            ,{field: 'status', title: '状态',toolbar: '#admin_group_status'}
+            ,{fixed: 'right', width:150, align:'center', toolbar: '#admin_group_menu'}
+        ]]
+        ,skin: 'line'
+    });
+
+    //单元格编辑
+    table.on('edit(tplay-admin-group)', function(obj){
+        tplay.ajax({
+            url:config.domain+"/admin/rule/edit",
+            type:'post',
+            data:{id:obj.data.id,field:obj.field,value:obj.value},
+            success:function(res){
+                if(res.code !== 1){
+                    layer.msg(res.msg);
+                }
+            }
+        })  
+    });
+
+    //事件处理
+    var events = {
+        add_group: function(othis, type){
+          location.hash = '#/admin/addGroup';
+        }
+        ,del_group: function(othis, type){
+            var thisTabs = tabs[type]
+            ,checkStatus = table.checkStatus(thisTabs.id)
+            ,data = checkStatus.data; //获得选中的数据
+            if(data.length === 0) return layer.msg('未选中行');
+            var array = [];
+            for (var i = 0; i < data.length; i++) {
+                array.push(data[i].id);
+            }
+            layer.confirm('确定删除选中的数据吗？', function(){
+                $.ajax({
+                    url:config.domain+"/admin/admin/delGroup",
+                    type:'post',
+                    data:{id:array},
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 1){
+                            table.reload(thisTabs.id); //刷新表格
+                        }
+                    }
+                })
+            });
+        }
+    };
+  
+    $('.tplay-btn .layui-btn').on('click', function(){
+        var othis = $(this)
+        ,thisEvent = othis.data('events')
+        ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    //监听工具条
+    table.on('tool(tplay-admin-group)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+   
+        if(layEvent === 'edit')
+        { //修改
+            location.hash = '#/admin/editGroup?id='+data.id;
+        } 
+        else if(layEvent === 'del')
+        { //删除
+            layer.confirm('真的删除行么', function(index){
+                tplay.ajax({
+                    url:config.domain+"/admin/admin/delGroup",
+                    type:"post",
+                    data:{id:data.id},
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 1){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);
+                        }
+                    }
+                })
+            });
+        }
+    });
+
+});
+</script>

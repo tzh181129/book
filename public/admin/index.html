@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>罗阁科技</title>
+	<!-- build:css -->
+	<link rel="stylesheet" href="lib/layui/css/layui.css">
+	<link rel="stylesheet" href="lib/tplay/css/tplay.css">
+	<!-- <link rel="stylesheet" href="lib/tplay/css/admin.css"> -->
+	<!-- endbuild -->
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<!-- header -->
+		<div class="layui-header">
+			<div class="layui-logo" style="width:260px;">
+				<div class="layui-logo-brand">
+					<a href="#/">后台管理中心</a>
+				</div>
+				<div class="layui-logo-toggle" style="border-right: 1px solid #2a2f32;">
+					<img src="lib/tplay/images/logo.png">
+				</div>
+
+				<!-- 头部天气显示 -->
+				<div class="weather" style="position: absolute;left: 240px;top: 0px;width:268px;line-height: 42px;">
+			    	<div id="tp-weather-widget" style="float:left"></div>
+					<script>(function(T,h,i,n,k,P,a,g,e){g=function(){P=h.createElement(i);a=h.getElementsByTagName(i)[0];P.src=k;P.charset="utf-8";P.async=1;a.parentNode.insertBefore(P,a)};T["ThinkPageWeatherWidgetObject"]=n;T[n]||(T[n]=function(){(T[n].q=T[n].q||[]).push(arguments)});T[n].l=+new Date();if(T.attachEvent){T.attachEvent("onload",g)}else{T.addEventListener("load",g,false)}}(window,document,"script","tpwidget","//widget.seniverse.com/widget/chameleon.js"))</script>
+					<script>tpwidget("init", {
+					    "flavor": "slim",
+					    "location": "WX4FBXXFKE4F",
+					    "geolocation": "enabled",
+					    "language": "zh-chs",
+					    "unit": "c",
+					    "theme": "chameleon",
+					    "container": "tp-weather-widget",
+					    "bubble": "disabled",
+					    "alarmType": "badge",
+					    "color": "#FFFFFF",
+					    "uid": "U9EC08A15F",
+					    "hash": "039da28f5581f4bcb5c799fb4cdfb673"
+					});
+					tpwidget("show");</script>
+			    </div>
+
+			</div>
+
+			<link rel="stylesheet" type="text/css" href="static/css/calculator.css">
+			<!-- 计算器 -->
+		    <div class="calc-wrap" style="display:none">
+		        <div class="calc-in-out">
+		            <!-- 上一条运算记录 -->
+		            <p class="calc-history" title=""></p>
+		            <!-- 输入的数据 -->
+		            <p class="calc-in"></p>
+		            <!-- 输出的运算结果 -->
+		            <p class="calc-out active"></p>
+		        </div>
+		        <table class="calc-operation">
+		            <thead></thead>
+		            <tbody>
+		                <tr>
+		                    <td data-ac="cls" class="cls">C</td>
+		                    <td data-ac="del">&larr;</td>
+		                    <td data-ac="sq">x<sup>2</sup></td>
+		                    <td data-ac="mul">&times;</td>
+		                </tr>
+		                <tr>
+		                    <td data-val="7">7</td>
+		                    <td data-val="8">8</td>
+		                    <td data-val="9">9</td>
+		                    <td data-ac="div">&divide;</td>
+		                </tr>
+		                <tr>
+		                    <td data-val="4">4</td>
+		                    <td data-val="5">5</td>
+		                    <td data-val="6">6</td>
+		                    <td data-ac="plus">+</td>
+		                </tr>
+		                <tr>
+		                    <td data-val="1">1</td>
+		                    <td data-val="2">2</td>
+		                    <td data-val="3">3</td>
+		                    <td data-ac="minus">-</td>
+		                </tr>
+		                    <td data-ac="per">%</td>
+		                    <td data-val="0">0</td>
+		                    <td data-ac="dot">.</td>
+		                    <td data-ac="eq" class="eq">=</td>
+		            </tbody>
+		        </table>
+		    </div>
+		    
+
+			<div class="layui-layout-right">
+				<ul class="tplay-nav" lay-filter="header_right">
+					<!-- <li class="tplay-item">
+						<a href="/" target="_blonk">
+							<i class="layui-icon">&#xe7ae;</i>
+						</a>
+					</li> -->
+					<li class="tplay-item" >
+						<a href="javascript:;">
+							工具<!-- <i class="layui-icon">&#xe642;</i> -->
+						</a>
+						<ul class="tplay-nav-child tplay-nav-right">
+							<li class="tplay-item" id="tag">
+								<a href="javascript:;">
+									<i class="layui-icon">&#xe642;</i>
+									<span>备忘录</span>
+								</a>
+							</li>
+							<li class="tplay-item">
+								<a href="javascript:;">
+									<i class="layui-icon">&#xe620;</i>
+									<span>计算器</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="tplay-item">
+						<a href="javascript:;">
+							<span>
+								管理
+							</span>
+						</a>
+						<ul class="tplay-nav-child tplay-nav-right">
+							<li class="tplay-item">
+								<a href="#/admin/editPwd">
+									<i class="layui-icon">&#xe642;</i>
+									<span>修改密码</span>
+								</a>
+							</li>
+							<!-- <li class="tplay-item">
+								<a href="#/admin/profile">
+									<i class="layui-icon">&#xe642;</i>
+									<span>个人资料</span>
+								</a>
+							</li> -->
+							<li class="tplay-item" tplay-target="setting">
+								<a href="javascript:;">
+									<i class="layui-icon">&#xe620;</i>
+									<span>系统设置</span>
+								</a>
+							</li>
+							<li class="tplay-nav-line"></li>
+							<li class="tplay-item">
+								<a href="javascript:;" tplay-target='logout'>
+									<i class="layui-icon">&#x1006;</i>
+									<span>注销</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<script id="headPicTpl" type="text/html">
+					<!-- <li class="tplay-item" id="tag"> -->
+						<a href="#/admin/profile" style="padding:0 12px;">
+							{{# if(d.image) { }}
+	                        <img src="{{ d.image }}" style="width:36px;height:36px;border-radius:18px;">
+	                        {{# }else{ }}
+	                        <img src="lib/tplay/images/default_family.jpg" style="width:36px;height:36px;border-radius:18px;">
+	                        {{# } }}
+						</a>
+					<!-- </li> -->
+					</script>
+					<li class="tplay-item" id="head_pic">
+						<a href="javascript:;" style="padding:0 12px;">
+	                        <img src="lib/tplay/images/default_family.jpg" style="width:36px;height:36px;border-radius:18px;">
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- silds -->
+		<div class="layui-side layui-side-menu" tplay-side="true">
+			<div class="layui-side-scroll">
+				<div class="layui-logo-toggle" tplay-toggle="side" data-toggle="on">
+					<i class="layui-icon layui-icon-shrink-right"></i>
+				</div>
+				<div id="menu-box">
+					
+				</div>
+			</div>
+		</div>
+		<!-- main -->
+		<div class="layui-body" tplay-body="true">
+			<router-view></router-view>
+		</div>
+	</div>
+	<!-- build:js -->
+	<script src="lib/tplay/polyfill.min.js"></script>
+	<script src="lib/layui/layui.js"></script>
+	<script src="lib/tplay/index.js"></script>
+	<!-- endbuild -->
+	<!-- build:use -->
+	<script>
+		layui.config({
+			base: 'controller/'
+		}).use('index');
+	</script>
+	<!-- endbuild -->
+
+	<script type="text/javascript">
+	layui.use(['form', 'table', 'element','tplay','apiconfig'], function(){
+	    var $ = layui.$,
+	    form = layui.form,
+	    table = layui.table,
+	    element = layui.element,
+	    tplay = layui.tplay,
+	    laytpl = layui.laytpl,
+	    config = layui.apiconfig;
+
+	    //获取用户信息
+		var profile;
+	    tplay.ajax({url:config.domain+"/admin/admin/profile",async:false,success:function(res){profile = res.data;}});
+	    var getTpl = $('#headPicTpl').html();
+	    view = document.getElementById('head_pic');
+	    laytpl(getTpl).render(profile, function(html)
+	    {
+	        view.innerHTML = html;
+	    });
+
+	});
+	</script>
+
+	<script src="static/js/jquery-1.7.1.min.js"></script>
+	<script src="static/js/calculator.js"></script>
+</body>
+</html>

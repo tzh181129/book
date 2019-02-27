@@ -1,0 +1,157 @@
+<div class="tplay-body">
+    <div class="layui-tab-content">
+      <div class="layui-tab-item layui-show tplay-btn">
+        <button class="layui-btn layui-btn-normal" data-type="admin" data-events="add">新增</button>
+        <button class="layui-btn layui-btn-danger" data-type="admin" data-events="del">批量删除</button>
+        <div class="layui-form layui-form-item" style="margin: 10px 0;" lay-filter="component-form-group">
+          <div class="layui-input-inline">
+            <script id="menuCateList" type="text/html">
+              <select lay-filter="menuCateList">
+                <option value="" selected>默认显示主分类组内容</option>
+                {{# for(var i = 0;i< d.data.length;i++){ }}
+                  <option value="{{ d.data[i].id }}">{{ d.data[i].name }}</option>
+                {{# } }}
+              </select> 
+            </script>
+            <div id="add_menu"></div>
+          </div>
+          <div class="layui-input-inline">
+              <select id="menus" lay-filter="menuCates">
+                  <option value="" selected>请先选择分类组</option>
+              </select>
+          </div>
+        </div>
+        <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+          <script type="text/html" id="admin_group_status">
+              {{#  if(d.status == 1){ }}
+                <span style="color:#1E9FFF">正常显示 </span>  
+              {{#  } else { }}
+                <span style="color:#FF5722">禁止显示 </span> 
+              {{#  } }}
+            </script>
+            <script type="text/html" id="admin_group_menu">
+              <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+              </div>
+            </script>
+        </table>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig','laytpl','form'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,element = layui.element
+  ,laytpl = layui.laytpl
+  ,tplay = layui.tplay
+  ,form = layui.form
+  ,config = layui.apiconfig;
+
+  var groups;
+  tplay.ajax({url:config.domain+"/admin/index/contentCateGroup",async:false,success:function(res){groups = res;}});
+  var getTpl = $('#menuCateList').html()
+  ,view = document.getElementById('add_menu');
+  laytpl(getTpl).render(groups, function(html){
+    view.innerHTML = html;
+  });
+
+  form.render(null, 'component-form-group');
+
+  form.on('select(menuCateList)', function(data){
+      var cates;
+      tplay.ajax({url:config.domain+"/admin/index/contentCate?group_id="+data.value,async:false,success:function(res){cates = res;}});
+      var optionstring = "";
+      $.each(cates.data, function(i,item){
+          optionstring += "<option value=\"" + item.id + "\" >" + item.str + item.name + "</option>";
+      });
+      $("#menus").html('<option value="">可选择分类</option>' + optionstring);
+      form.render('select');
+      tableIns.reload({where:{group_id:data.value}});
+  });
+
+  form.on('select(menuCates)', function(data){
+      tableIns.reload({where:{cate_id:data.value}});
+  });
+
+  //内容
+  var tableIns = table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/portal/content'
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'title', title: '标题'}
+      ,{field: 'num', title: '点击'}
+      ,{field: 'content_cate', title: '所属'}
+      ,{field: 'status', title: '状态',toolbar: '#admin_group_status'}
+      ,{fixed: 'right', width:150, align:'center', toolbar: '#admin_group_menu'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('确定删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/portal/delContent",
+          type:'post',
+          data:{id:array},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+        
+      });
+    }
+    ,add: function(othis, type){
+      location.hash = '#/portal/addContent';
+    }
+  };
+
+  //区分各选项卡中的表格
+  var tabs = {
+    admin: {
+      text: '菜单'
+      ,id: 'tplay-admin-all'
+    },
+    group: {
+      text: '菜单组'
+      ,id: 'tplay-admin-group'
+    }
+  };
+  
+  $('.tplay-btn .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+
+  //监听工具条
+  table.on('tool(tplay-admin-all)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+    var data = obj.data; //获得当前行数据
+    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+    var tr = obj.tr; //获得当前行 tr 的DOM对象
+   
+    if(layEvent === 'edit'){ //修改
+      location.hash = '#/portal/editContent?id='+data.id;
+    }
+  });
+});
+</script>

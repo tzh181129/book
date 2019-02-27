@@ -1,0 +1,310 @@
+<div class="layui-col-md8">
+  <div class="tplay-main-body" style="margin-right: 0;">
+    <div class="layui-card-header">实时访客</div>
+    <div id="tplay-main-view-1" class="tplay-main-view">
+    </div>
+  </div>
+  <div class="tplay-main-body"  style="margin-right: 0;">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">管理员</li>
+        <li>权限组</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+            <script type="text/html" id="all_admin_menu">
+              <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+                <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del">删除</a>
+              </div>
+            </script>
+          </table>
+        </div>
+        <div class="layui-tab-item">
+          <table id="tplay-admin-group" lay-filter="tplay-admin-group">
+            <script type="text/html" id="admin_group_status">
+              {{#  if(d.status == 1){ }}
+                <span style="color:#1E9FFF">正常 </span>  
+              {{#  } else { }}
+                <span style="color:#FF5722">禁用 </span> 
+              {{#  } }}
+            </script>
+            <script type="text/html" id="admin_group_menu">
+              <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+                <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del">删除</a>
+              </div>
+            </script>
+          </table>
+        </div>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<div class="layui-col-md4">
+  <div class="tplay-main-body">
+    <div class="layui-card-header">快捷入口</div>
+      <div class="layui-card-body">
+        <ul class="layui-row layui-col-space10">
+          <li class="layui-col-xs6">
+              <div style="height:75px;  background-color:#f0f0f0;line-height: 75px;text-align: center;">
+                <a href="#/admin/index"><i class="layui-icon">&#xe662;</i> 管理员</a>
+              </div>
+          </li>
+          <li class="layui-col-xs6">
+              <div style="height:75px;  background-color:#f0f0f0;line-height: 75px;text-align: center;">
+                <a href="#/admin/editPwd"><i class="layui-icon">&#xe642;</i> 更换密码</a>
+              </div>
+          </li>
+          <li class="layui-col-xs6">
+              <div style="height:75px;  background-color:#f0f0f0;line-height: 75px;text-align: center;">
+                <a href="#/system/system"><i class="layui-icon">&#xe63c;</i> 系统配置</a>
+              </div>
+          </li>
+          <li class="layui-col-xs6">
+              <div style="height:75px;  background-color:#f0f0f0;line-height: 75px;text-align: center;">
+                <a href="#/recycling/index"><i class="layui-icon">&#xe653;</i> 回收站</a>
+              </div>
+          </li>
+        </ul>
+    </div>
+  </div>
+
+  <!-- <div class="tplay-main-body">
+    <div class="layui-card-header">官方公告</div>
+    <div class="layui-carousel" id="test2">
+      <div carousel-item="">
+        <div style="background-color:#009688;text-align: center;line-height: 70px;color:#fff;">
+            Tplay 2.0是一个区别于1.X的全新版本！更加完美，更加强大！
+        </div>
+        <div style="background-color:#1E9FFF;text-align: center;line-height: 70px;color:#fff;">
+            Tplay 2.0前后端完全分离，前端加入路由功能，前后端可独立使用！
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tplay-main-body">
+    <div class="layui-card-header">开发基于</div>
+    <div style="padding:5px;">
+      <table class="layui-table">
+        <colgroup>
+          <col width="150">
+          <col>
+        </colgroup>
+        <tbody>
+          <tr>
+            <td>Layui</td>
+            <td>v-2.3.0</td>
+          </tr>
+          <tr>
+            <td>ThinkPHP</td>
+            <td>v-5.0.20</td>
+          </tr>
+          <tr>
+            <td>特点</td>
+            <td>
+                <span class="layui-badge">高颜值</span>
+                <span class="layui-badge layui-bg-orange">响应式</span>
+                <span class="layui-badge layui-bg-blue">前后端分离</span>
+                <span class="layui-badge layui-bg-cyan">学习成本低</span>
+                <span class="layui-badge layui-bg-green">简单易用</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="tplay-main-body">
+    <div class="layui-card-header">还有话说</div>
+    <div style="padding:5px;">
+      <blockquote class="layui-elem-quote">Tplay Pro 始终基于最新版的ThinkPHP5.0及Layui2.0进行开发！新版的Tplay采用了前后端完全分离的模式开发，且前端提供路由功能并非普通的iframe；此外，新版的前端和后端完全可分开作为独立的应用去使用。</blockquote>
+      <a class="layui-btn layui-btn-danger" href="javascript:;" id="getTplay">获取源码</a>
+      <a class="layui-btn layui-btn-warm" href="https://www.kancloud.cn/pengweiphp/tplay/627897" target="_blank">开发者文档</a>
+      <a class="layui-btn" href="http://tplay.pengyichen.cn" target="_blank">1.x版免费下载</a>
+      <a class="layui-btn layui-btn-normal" href="https://jq.qq.com/?_wv=1027&k=5gZVac6" target="_blank">免费交流群</a>
+    </div>
+  </div> -->
+</div>
+
+<script>
+layui.use(['jquery', 'table', 'echarts','carousel','tplay' ,'route' ,'utils','apiconfig'], function () {
+  var $ = layui.jquery,
+    layer = layui.layer,
+    carousel = layui.carousel,
+    table = layui.table,
+    tplay = layui.tplay,
+    route = layui.route,
+    utils = layui.utils,
+    config = layui.apiconfig;
+
+   //当日流量图
+  var myChart = echarts.init(document.getElementById('tplay-main-view-1'));
+  var data;
+      tplay.ajax({
+        url:config.domain+'/admin/index/curve',
+        type:"post",
+        async:false,
+        success:function(res){
+          if(res.code == 1){
+            data = res;
+          }
+        }
+      })
+
+  option = {
+      tooltip : {
+        trigger: 'axis'
+      },
+      legend: {
+        data:['','']
+      },
+      tooltip : {
+        trigger: 'axis'
+      },
+      legend: {
+        data:['','']
+      },
+      grid: {
+          top:'12%',
+          left: '5%',
+          right: '5%',
+          bottom: '10%',
+          containLabel: true
+      },
+      xAxis : [{
+        type : 'category',
+        boundaryGap : false,
+        data: data.data.time
+      }],
+      yAxis : [{
+        type : 'value'
+      }],
+      series : [{
+        name:'PV',
+        type:'line',
+        smooth: true,
+        itemStyle: {normal: {color:'#009688'}},
+        lineStyle:{normal:{color:'#009688',width:1}},
+        areaStyle: {normal:{color:'#009688'}},
+        data: data.data.pv
+      },{
+        name:'UV',
+        type:'line',
+        smooth: true,
+        itemStyle: {normal: {color:'#01AAED'}},
+        lineStyle:{normal:{color:'#01AAED',width:1}},
+        areaStyle: {normal:{color:'#01AAED'}},
+        data: data.data.uv
+      }]
+  };
+  myChart.setOption(option);
+
+  $(window).on('resize', function () {
+    myChart.resize();
+  });
+
+ //列表1
+  table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/admin/index'
+    ,where: {access_token: layui.data('tplay').access_token}
+    ,page: true
+    ,limit:15
+    ,cols: [[{field: 'id', title: 'ID'}
+      ,{field: 'username', title: '用户名'}
+      ,{field: 'nickname', title: '昵称'}
+      ,{field: 'phone', title: '手机'}
+      ,{field: 'last_login_time', title: '最后登录时间'}
+      ,{field: 'last_login_ip', title: '最后登录IP'}
+      ,{field: 'login_num', title: '登录次数'}
+      ,{fixed: 'right', width:150, align:'center', toolbar: '#all_admin_menu'}
+    ]]
+    ,skin: 'line'
+  });
+  
+ //列表2
+  table.render({
+    elem: '#tplay-admin-group'
+    ,url: config.domain+'/admin/admin/groupList'
+    ,page: true
+    ,limit:15
+    ,cols: [[{field: 'id', title: 'ID'}
+      ,{field: 'title', title: '标题'}
+      ,{field: 'create_time', title: '创建时间'}
+      ,{field: 'update_time', title: '最后修改时间'}
+      ,{field: 'status', title: '状态',toolbar: '#admin_group_status'}
+      ,{fixed: 'right', width:150, align:'center', toolbar: '#admin_group_menu'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(tplay-admin-all)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+    var data = obj.data; //获得当前行数据
+    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+    var tr = obj.tr; //获得当前行 tr 的DOM对象
+   
+    if(layEvent === 'edit'){ //修改
+      location.hash = '#/admin/edit?id='+data.id;
+    } else if(layEvent === 'del'){ //删除
+      layer.confirm('真的删除行么', function(index){
+        tplay.ajax({
+          url:config.domain+"/admin/admin/del",
+          type:"post",
+          data:{id:data.id},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+              layer.close(index);
+            }
+          }
+        })
+      });
+    }
+  });
+
+  //监听工具条
+  table.on('tool(tplay-admin-group)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+    var data = obj.data; //获得当前行数据
+    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+    var tr = obj.tr; //获得当前行 tr 的DOM对象
+   
+    if(layEvent === 'edit'){ //修改
+      location.hash = '#/admin/editGroup?id='+data.id;
+    } else if(layEvent === 'del'){ //删除
+      layer.confirm('真的删除行么', function(index){
+        tplay.ajax({
+          url:config.domain+"/admin/admin/delGroup",
+          type:"post",
+          data:{id:data.id},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+              layer.close(index);
+            }
+          }
+        })
+      });
+    }
+  });
+
+  //公告轮播
+  carousel.render({
+    elem: '#test2'
+    ,interval: 5000
+    ,anim: 'default'
+    ,indicator : 'none'
+    ,width:'100%'
+    ,height: '70px'
+  });
+
+  $('#getTplay').click(function(){
+    layer.open({area: '300px',title:false,content:'亲！Tplay Pro为付费产品，永久费用为￥299，不限制域名、不限制ip。<br>源码获取方式为：<br>1.添加作者QQ：389625819,并备注：Tplay Pro<br>2.向支付宝账户：pw9188@126.com转账299元<br>3.向你刚添加的作者QQ发送转账截图<br>4.由作者拉你进vip交流群获取源码，并获得永久更新权'});
+  })
+});
+</script>

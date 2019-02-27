@@ -1,0 +1,401 @@
+<div class="tplay-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">管理员</li>
+        <li>权限组</li>
+        <li>系统配置</li>
+        <li>权限节点</li>
+        <li>文章/商品</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="restore">批量还原</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="del">彻底删除</button>
+          <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+          </table>
+        </div>
+        <div class="layui-tab-item tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="restore_group">批量还原</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="del_group">彻底删除</button>
+          <table id="tplay-admin-group" lay-filter="tplay-admin-group">
+          </table>
+        </div>
+        <div class="layui-tab-item tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="system" data-events="restore_system">批量还原</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="system" data-events="del_system">彻底删除</button>
+          <table id="tplay-admin-system" lay-filter="tplay-admin-system">
+          </table>
+        </div>
+        <div class="layui-tab-item tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="rule" data-events="restore_rule">批量还原</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="rule" data-events="del_rule">彻底删除</button>
+          <table id="tplay-admin-rule" lay-filter="tplay-admin-rule">
+          </table>
+        </div>
+        <div class="layui-tab-item tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="content" data-events="restore_content">批量还原</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="content" data-events="del_content">彻底删除</button>
+          <table id="tplay-admin-content" lay-filter="tplay-admin-content">
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,element = layui.element
+  ,tplay = layui.tplay
+  ,config = layui.apiconfig;
+
+  //管理员
+  table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/recycling/index'
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'username', title: '用户名'}
+      ,{field: 'nickname', title: '昵称'}
+      ,{field: 'phone', title: '手机'}
+      ,{field: 'update_time', title: '删除时间'}
+    ]]
+    ,skin: 'line'
+  });
+  
+  //权限组
+  table.render({
+    elem: '#tplay-admin-group'
+    ,url: config.domain+'/admin/recycling/index'
+    ,where: {model: 'adminGroup'}
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'title', title: '标题'}
+      ,{field: 'update_time', title: '删除时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //系统配置
+  table.render({
+    elem: '#tplay-admin-system'
+    ,url: config.domain+'/admin/recycling/index'
+    ,where: {model: 'system'}
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'key', title: 'key'}
+      ,{field: 'name', title: '名称'}
+      ,{field: 'value', title: '值'}
+      ,{field: 'update_time', title: '删除时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //节点
+  table.render({
+    elem: '#tplay-admin-rule'
+    ,url: config.domain+'/admin/recycling/index'
+    ,where: {model: 'adminRule',status:'type'}
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'title', title: '名称'}
+      ,{field: 'name', title: '规则'}
+      ,{field: 'condition', title: '附加规则'}
+      ,{field: 'update_time', title: '删除时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //内容
+  table.render({
+    elem: '#tplay-admin-content'
+    ,url: config.domain+'/admin/recycling/index'
+    ,where: {model: 'content'}
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'title', title: '标题'}
+      ,{field: 'update_time', title: '删除时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('彻底删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/del",
+          type:'post',
+          data:{id:array,model:'admin'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,restore: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('还原选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/restore",
+          type:'post',
+          data:{id:array,model:'admin'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,restore_group: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('还原选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/restore",
+          type:'post',
+          data:{id:array,model:'adminGroup'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,del_group: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('彻底删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/del",
+          type:'post',
+          data:{id:array,model:'adminGroup'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,restore_system: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].key);
+      }
+      layer.confirm('还原选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/restore",
+          type:'post',
+          data:{id:array,model:'system',key:'key'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,del_system: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].key);
+      }
+      layer.confirm('彻底删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/del",
+          type:'post',
+          data:{id:array,model:'system'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,restore_rule: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('还原选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/restore",
+          type:'post',
+          data:{id:array,model:'adminRule',status:'type'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,del_rule: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('彻底删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/del",
+          type:'post',
+          data:{id:array,model:'adminRule'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,restore_content: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('还原选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/restore",
+          type:'post',
+          data:{id:array,model:'content'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+    ,del_content: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('彻底删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/recycling/del",
+          type:'post',
+          data:{id:array,model:'content'},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+      });
+    }
+  };
+
+  //区分各选项卡中的表格
+  var tabs = {
+    admin: {
+      text: '管理员'
+      ,id: 'tplay-admin-all'
+    },
+    group: {
+      text: '权限组'
+      ,id: 'tplay-admin-group'
+    },
+    system: {
+      text: '系统配置'
+      ,id: 'tplay-admin-system'
+    },
+    rule: {
+      text: '权限节点'
+      ,id: 'tplay-admin-rule'
+    },
+    content: {
+      text: '文章/商品'
+      ,id: 'tplay-admin-content'
+    }
+  };
+  
+  $('.tplay-btn .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+});
+</script>

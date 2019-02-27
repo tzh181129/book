@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <title>鑫绎尚装修</title>
+    <meta name="keywords" content="鑫绎尚装修" />
+    <meta name="description" content="鑫绎尚装修" />
+    <meta name="apple-mobile-web-app-title" content="鑫绎尚装修">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name='apple-touch-fullscreen' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+
+    <link href="__XYSMCSS__/public.css?v=5.3" rel="stylesheet"/>
+
+    <script src="__XYSMJS__/jquery.min.js?v=1.8.2"></script>
+    <!-- <script src="__XYSMJS__/public.js?v=1.6"></script> -->
+    <link href="__XYSMCSS__/swiper.css?v=1.0" rel="stylesheet"/>
+    <link href="__XYSMCSS__/index.css?v=2.0" rel="stylesheet"/>
+
+</head>
+<body>
+    
+    {include file="public/head"}
+
+    
+<!-- banner-->
+<div class="page_main">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+
+            {foreach $carousel as $vo}
+            <div class="swiper-slide">
+                <a href="{$vo.href}" target="_blank">
+                    <img src="{$vo.img}" alt="{$vo.title}" />
+                </a>
+            </div>
+            {/foreach}
+                    
+            <!-- <div class="swiper-slide">
+                <a href="/Mobile/HuoDong/Details/zxj180306" target="_blank">
+                    <img src="__XYSMIMG__/ip_banner.jpg" alt="苹果装饰_家装节" />
+                </a>
+            </div> -->
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+
+<ul class="nav">
+    <li><a href="/Mobile/Ensure/Technology"><img src="__XYSMIMG__/nav_9.png" alt="" /></a><p>工程工艺</p></li>
+    <li><a href="/Mobile/Cases"><img src="__XYSMIMG__/nav_2.jpg" alt="" /></a><p>精品案例</p></li>
+    <li><a href="/Mobile/Designers"><img src="__XYSMIMG__/nav_3.jpg" alt="" /></a><p>设计团队</p></li>
+    <li><a href="/Mobile/VrModel"><img src="__XYSMIMG__/nav_4.jpg" alt="" /></a><p>VR样板间</p></li>
+</ul>
+<!-- 智能报价器-->
+<div class="ticker">
+    <div class="ticker_1">
+        <h4>抢免费设计名额</h4>
+    </div>
+    <div class="ticker_2">
+        今日还剩&nbsp;<span class="apple_places">
+            <label class="ticker_bg">0</label>
+            <label class="ticker_bg">0</label>
+            <label class="ticker_bg">0</label>
+        </span>&nbsp;个免费名额
+    </div>
+    <form class="sub" id="baojia">
+        <input type="text" name="RealName" placeholder="请输入您的姓名" maxlength="20" /><br />
+        <input type="tel" name="Telephone" placeholder="请输入您的号码，获取免费名额" maxlength="11" /><br />
+        <p>我们承诺：您的信息将被严格保密，请放心填写！</p>
+        <button type="button" class="sub_btn" onClick="apply_ajax('#baojia', '首页_底下报价');">立即申请</button>
+    </form>
+    <div class="tit">
+        <img src="__XYSMIMG__/inform_icon.png" alt="" />
+        <ul>
+            <li>
+                <p>赵先生  137********  已申请了报价</p>
+            </li>
+            <li>
+                <p>李先生  186********  已申请了报价</p>
+            </li>
+            <li>
+                <p>白先生  135********  已申请了报价</p>
+            </li>
+            <li>
+                <p>张小姐  189********  已申请了报价</p>
+            </li>
+            <li>
+                <p>付先生  186********  已申请了报价</p>
+            </li>
+            <li>
+                <p>汤小姐  137********  已申请了报价</p>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 专业一对一服务-->
+<div class="free_box">
+    <ul class="free">
+        <li><span>专业一对一服务<br />设计师上门量房</span></li>
+        <li><span>专业设计师免费帮您设计平面方案</span></li>
+        <div class="clear"></div>
+    </ul>
+    <p>壕礼</p>
+    <div class="xian"></div>
+</div>
+<div class="free_box_2">
+    <ul class="free_2">
+        <li>
+            <a href="/Mobile/Free/BaoJia">
+                <h5>免费报价<i></i></h5>
+                <p>10秒了解装修花多少钱</p>
+                <div id="free_container"><img src="__XYSMIMG__/free_jisj.png" alt="" /></div>
+            </a>
+        </li>
+        <li>
+            <ul>
+                <li>
+                    <a href="/Mobile/Free">
+                        <h5>免费设计<i></i></h5>
+                        <p>3天出平面设计图</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Mobile/Free/LiangFang">
+                        <h5>免费量房<i></i></h5>
+                        <p>设计师上门服务</p>
+                    </a>
+                </li>
+                <div class="clear"></div>
+            </ul>
+        </li>
+        <div class="clear"></div>
+    </ul>
+    <div class="xian"></div>
+</div>
+<!--case list-->
+<div class="case_list">
+    <div class="case_list_1">
+        <h1>精品案例</h1>
+        <p>装修案例 眼见为实，触动你的灵感</p>
+    </div>
+    <ul class="case_list_2">
+<li><a href="/Mobile/Cases/Details/129" target="_blank"><img src="__XYSMIMG__/2017060711415911011930.jpg" alt="大气新中式太有情怀" /><p>大气新中式太有情怀</p></a></li><li><a href="/Mobile/Cases/Details/128" target="_blank"><img src="__XYSMIMG__/2017060711371231973799.jpg" alt="打造75㎡蓝色海风" /><p>打造75㎡蓝色海风</p></a></li><li><a href="/Mobile/Cases/Details/78" target="_blank"><img src="__XYSMIMG__/2017052309480878.jpg" alt="简约欧式风格" /><p>简约欧式风格</p></a></li><li><a href="/Mobile/Cases/Details/326" target="_blank"><img src="__XYSMIMG__/201711271134475767.png" alt="龙湖湘风原著美式风格" /><p>龙湖湘风原著美式风格</p></a></li>
+    </ul>
+    <ul class="case_list_3">
+        <li><a href="/Mobile/Cases?CasesClass_Id=1&amp;Tag=%E5%8D%A7%E5%AE%A4"><img src="__XYSMIMG__/csae_list_5.jpg" alt="" /></a><p>卧室</p></li>
+        <li><a href="/Mobile/Cases?CasesClass_Id=1&amp;Tag=%E9%A4%90%E5%8E%85"><img src="__XYSMIMG__/csae_list_6.jpg" alt="" /></a><p>餐厅</p></li>
+        <li><a href="/Mobile/Cases?CasesClass_Id=1&amp;Tag=%E5%8E%A8%E6%88%BF"><img src="__XYSMIMG__/csae_list_7.jpg" alt="" /></a><p>厨房</p></li>
+        <li><a href="/Mobile/Cases?CasesClass_Id=1&amp;Tag=%E5%8D%AB%E7%94%9F%E9%97%B4"><img src="__XYSMIMG__/csae_list_8.jpg" alt="" /></a><p>卫生间</p></li>
+    </ul>
+    <div class="case_more">
+        <a href="/Mobile/Cases"><span>VIEW MORE 点击查看更多案例</span></a>
+    </div>
+</div>
+<!--VR-->
+<div class="vr">
+    <div class="vr_1">
+        <h1>VR样板间</h1>
+        <p>实景体验让您轻轻松松遇见未来家</p>
+    </div>
+    <ul class="vr_2">
+<li><a href="/Mobile/VrModel/Details/8" target="_blank"><img src="__XYSMIMG__/2017063010182080101889.jpg" alt="美式装修风格_3D案例样板间" /> <div class="c1"><img src="__XYSMIMG__/vr_04.png" class="vr_play1" /></div><div class="vr_center"><h1>美式装修风格_3D案例样板间</h1><p>三居 166m&sup2</p><button class="btn">查看详情</button></div></a></li>
+<li><a href="/Mobile/VrModel/Details/7" target="_blank"><img src="__XYSMIMG__/2017063010393390229538.jpg" alt="欧式风格_别墅装修实景图" /> <div class="c1"><img src="__XYSMIMG__/vr_04.png" class="vr_play1" /></div><div class="vr_center"><h1>欧式风格_别墅装修实景图</h1><p>别墅 470m&sup2</p><button class="btn">查看详情</button></div></a></li>
+<li><a href="/Mobile/VrModel/Details/6" target="_blank"><img src="__XYSMIMG__/201706301046145279443.jpg" alt="500平米_复式装修效果图_VR样板间" /> <div class="c1"><img src="__XYSMIMG__/vr_04.png" class="vr_play1" /></div><div class="vr_center"><h1>500平米_复式装修效果图_VR样板间</h1><p>复式 500m&sup2</p><button class="btn">查看详情</button></div></a></li>
+
+    </ul>
+    <div class="clear"></div>
+    <div class="case_more">
+        <a href="/Mobile/VrModel"><span>VIEW MORE 点击查看更多样板间</span></a>
+    </div>
+</div>
+
+<!-- 装修课堂：decoration -->
+<div class="decoration">
+    <div class="decoration_1">
+        <h1>装修课堂</h1>
+        <p>完整装修流程与攻略</p>
+    </div>
+    <ul>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=4"><img src="__XYSMIMG__/decoration_1.jpg" alt="" /></a></li>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=5"><img src="__XYSMIMG__/decoration_3.jpg" alt="" /></a></li>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=6"><img src="__XYSMIMG__/decoration_4.jpg" alt="" /></a></li>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=7"><img src="__XYSMIMG__/decoration_2.jpg" alt="" /></a></li>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=8"><img src="__XYSMIMG__/decoration_5.jpg" alt="" /></a></li>
+        <li><a href="/Mobile/Decorate?NewsClass_Id=9"><img src="__XYSMIMG__/decoration_6.jpg" alt="" /></a></li>
+
+    </ul>
+
+</div>
+
+
+
+    {include file="public/foot"}
+
+    
+    <script src="__XYSMJS__/swiper.min.js?v=3.4.0"></script>
+
+    <script>
+        /***top***/
+        $(document).ready(function () 
+        {
+            /***轮播***/
+            var swiper = new Swiper('.swiper-container', 
+            {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                autoplay: 2500,
+                autoplayDisableOnInteraction: false
+            });
+            /***公告***/
+            var tt;
+            function autoPlay() 
+            {
+                // tt = setInterval(function () {
+                //     $('.tit ul').animate({ marginTop: '-1.6rem' }, function () {//将UL向上移动25PX
+                //         //以下为移动UL之后，执行的事情
+                //         $(this).css({ 'margin-top': '0' }).find('li:first').appendTo(this);
+                //     })
+                // }, 2000)
+            };
+            autoPlay()
+            $('.tit').hover(function () {
+                clearInterval(tt)
+            }, function () {
+                autoPlay()
+            });
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        window._pt_lt = new Date().getTime();
+        window._pt_sp_2 = [];
+        _pt_sp_2.push('setAccount,29193a7e');
+        var _protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        (function() {
+            var atag = document.createElement('script'); atag.type = 'text/javascript'; atag.async = true;
+            atag.src = _protocol + 'js.ptengine.cn/29193a7e.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(atag, s);
+        })();
+    </script>
+
+    <script type="text/javascript">
+        (function() {
+            var tag="";
+            var untag="";
+            var jsf=".ad7.com/u/1/32ab334140f42ce07e7991fb405fa700.js";
+            var ad7 = document.createElement("script");
+            ad7.id="_mutmzc";
+            if (/^https/.test(location.href)) {ad7.src = 'https://js-ssl'+jsf+'?tag='+tag+'&untag='+untag;} else {ad7.src = 'http://js'+jsf+'?tag='+tag+'&untag='+untag;}
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(ad7, s);
+        }());
+    </script>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?1e97f5110588faced86e45464382045d";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107082309-1"></script>
+    <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+
+          gtag('config', 'UA-107082309-1');
+    </script>
+    <div style="display:none">
+        <script src="https://s13.cnzz.com/z_stat.php?id=1262682453&web_id=1262682453" language="JavaScript"></script>
+    </div>
+</body>
+</html>

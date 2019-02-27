@@ -1,0 +1,142 @@
+<form class="layui-form" lay-filter="tplay-form" id="group_edit">
+  <div class="tplay-body">
+    <div class="layui-row layui-col-space15">
+      <script id="edit_group" type="text/html">
+      <div class="layui-col-md6">
+          <div class="layui-card-header">基本信息</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <input type="text" required name="title" placeholder="分组名称" autocomplete="off" class="layui-input" value="{{ d.data.group.title }}">
+              <input type="hidden" name="id" value="{{ d.data.group.id }}">
+            </div>
+          </div>
+        <div class="layui-form" lay-filter="component-form-element">
+          <div class="layui-card-header">备注</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-card-body layui-row layui-col-space10">
+              <div class="layui-col-md12">
+                <textarea name="desc" placeholder="请输入" class="layui-textarea">{{ d.data.group.desc }}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form" lay-filter="component-form-element">
+          <div class="layui-card-header">状态</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <input type="radio" name="status" value="1" title="正常" {{# if(d.data.group.status == 1){ }}checked{{# } }}>
+              <input type="radio" name="status" value="0" title="禁用" {{# if(d.data.group.status == 0){ }}checked{{# } }}>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="layui-col-md6">
+            <div class="layui-card-header">权限分配</div>
+            <div class="layui-card-body">
+                <div class="layui-form">
+
+                    {{# for(var i = 0;i < d.data.rule.length;i++){ }}
+
+                    {{# if (d.data.rule[i].children){ }}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{{ d.data.rule[i].title }}</label>
+
+                        {{# for(var j = 0;j < d.data.rule[i].children.length;j++){ }}
+                        <div class="layui-form-item" style="margin-left:20px;">
+                        {{# if (d.data.rule[i].children[j].rule){ }}
+                        <label class="layui-form-label">
+                            |--{{ d.data.rule[i].children[j].title }}
+                        </label>
+                        <div class="layui-form layui-input-block">
+                            {{# for(var k = 0;k< d.data.rule[i].children[j].rule.length;k++){ }}
+                            <input type="checkbox" name="rule_id[]" lay-skin="primary" title="{{ d.data.rule[i].children[j].rule[k].title }}" value="{{ d.data.rule[i].children[j].rule[k].id }}" {{# if (d.data.group.rules){ }} {{# for(var s = 0;s< d.data.group.rules.length;s++){ }}{{# if(d.data.rule[i].children[j].rule[k].id == d.data.group.rules[s]){ }}checked{{# } }}{{# } }} {{# } }}>
+                            {{# } }}
+                        </div>
+                        {{# } }}
+                        </div>
+                        {{# } }}
+
+                    </div>
+                    {{# } }}
+
+                    {{# } }}
+
+                    <!-- <div class="layui-form-item">
+                        <label class="layui-form-label">节点列表：</label>
+                        <div class="layui-form layui-input-block">
+                            {{# for(var i = 0;i< d.data.rule.length;i++){ }}
+                                <input type="checkbox" name="rule_id[]" lay-skin="primary" title="{{ d.data.rule[i].title }}" value="{{ d.data.rule[i].id }}" {{# if (d.data.group.rules){ }} {{# for(var s = 0;s< d.data.group.rules.length;s++){ }}{{# if(d.data.rule[i].id == d.data.group.rules[s]){ }}checked{{# } }}{{# } }} {{# } }}>
+                            {{# } }}
+                        </div>
+                    </div> -->
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="tplay-from-editGroup">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </script>
+      <div id="editGroupView"></div>
+    </div>
+  </div>
+</form>
+
+<script>
+layui.use(['form','layer','laytpl','tplay','route','apiconfig'], function(){
+  var $ = layui.$
+  ,laytpl = layui.laytpl
+  ,form = layui.form
+  ,tplay = layui.tplay
+  ,route = layui.route
+  config = layui.apiconfig;
+
+  tplay.ajax({
+    url:config.domain+"/admin/admin/editGroup",
+    type:'get',
+    data:{id:route.params().id},
+    async:false,
+    success:function(res){
+      if(res.code == 1){
+        var editGroup = edit_group.innerHTML
+        ,view = document.getElementById('editGroupView');
+
+        var arr = []
+        for (var i in res.data.rule) {
+            arr.push(res.data.rule[i]); //属性
+            //arr.push(object[i]); //值
+        }
+        res.data.rule = arr;
+
+        console.log(res)
+
+        laytpl(editGroup).render(res, function(html){
+          view.innerHTML = html;
+        });
+      } else {
+        layer.msg(res.msg);
+      }
+    }
+  });
+  
+  form.render(null, 'tplay-form');
+  
+  form.on('submit(tplay-from-editGroup)', function(data){
+    $.ajax({
+      url:config.domain+"/admin/admin/editGroup",
+      type:"post",
+      data:$('#group_edit').serialize(),
+      success:function(res){
+        layer.msg(res.msg);
+        if(res.code == 1) {
+          tplay.goBack(1000);
+        }
+      }
+    })
+    return false;
+  });
+});
+</script>

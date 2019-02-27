@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html style="height:100%">
+    <head>
+        <meta charset="UTF-8">
+        <title>登录</title>
+        <link rel="stylesheet" href="../../lib/layui/css/layui.css">
+        <link rel="stylesheet" href="../../lib/tplay/css/tplay.css">
+    </head>
+    <body style="background: url(../../lib/tplay/images/background1.png) no-repeat;background-size: cover;">
+    	<div class="tplay-login-body">
+	        <form class="layui-form" id="tplay-login">
+			  <div class="layui-form-item">
+			      <input type="text" name="username" lay-verify="required" placeholder="账户" autocomplete="off" class="layui-input">
+			  </div>
+			  <div class="layui-form-item">
+			      <input type="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+			  </div>
+			  <div class="layui-form-item">
+			      <div class="layui-input-inline">
+			        <input type="text" name="vercode" placeholder="验证码" autocomplete="off" class="layui-input">
+			      </div>
+			      <div class="layui-input-inline">
+			        <img src="/captcha" class="layadmin-user-login-codeimg" height="39" width="200" onclick="this.src='/captcha?seed='+Math.random()" id="captcha">
+			      </div>
+			  </div>
+			  <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="tplay-login-submit" id="tplay-login-submit">登入系统</button>
+			</form>
+		</div>
+		<script src="../../lib/layui/layui.js"></script>
+		<script type="text/javascript">
+			layui.config({
+				base: '../../controller/'
+			}).use(['form','apiconfig'], function () {
+		        var form = layui.form,$ = layui.$,apiconfig = layui.apiconfig;
+		        form.on('submit(tplay-login-submit)', function(data) {
+                    $.ajax({
+                        url:"/admin/common/login",
+                        data:$('#tplay-login').serialize(),
+                        type:'post',
+                        async: false,
+                        success:function(res) {
+                            layer.tips(res.msg,'#tplay-login-submit');
+                            if(res.code == 1) {
+							  		layui.data('tplay', {
+									  key: 'access_token'
+							  		  ,value: res.data.access_token
+									})
+                                setTimeout(function() {
+                                    location.href = apiconfig.indexPage;
+                                }, 1000);
+                            } else {
+                                $('#captcha').click();
+                            }
+                        }
+                    })
+                    return false;
+                });
+		    });
+		</script>
+    </body>
+</html>

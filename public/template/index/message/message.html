@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>信息-沈阳太珩模具材料有限公司</title>
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/base.css">
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/index.css">
+    <link rel="stylesheet" type="text/css" href="__XYSCSS__/aos.css">
+</head>
+<body>
+<div class="main">
+    <!--导航栏-->
+    {include file="public/head"}
+    <!--主体-->
+    <div class="news-first">
+        <div class="news-body "   data-aos="fade-up" data-aos-easing="ease" data-aos-delay="400">
+            <div class="contact-title news-title">
+                <span class="contact-our">新闻中心</span>
+                <span class="contact-us">NEWS CENTER</span>
+            </div>
+            <div class="news-second">
+                <div class="news-left" id="container">
+                    <div class="banner" id="banner1">
+                        <ul class="tab">
+                            {foreach $carousel as $vo}
+                            <li><a href="{$vo.href}"><img class="news-photo" src="{$vo.img}"></a></li>
+                            {/foreach}
+                        </ul>
+                        <div class="cur"></div>
+                    </div>
+                </div>
+                <div class="news-right">
+                    <div class="news-small">
+                        <span class="news-choose">精选</span>
+                        <span class="news-black"><a href="detail?id={$news.id}">{$news.title}</a></span>
+                        <span class="news-date news-year">{$news.create_time}</span>
+                    </div>
+                    <div class="news-content">
+                        <a href="detail?id={$news.id}">{$news.description}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-third">
+                <ul class="flex1 news-ul">
+                    {foreach $info as $vo}
+                    <li class="news-list">
+                        <div class="news-icon">
+                            <a href="detail?id={$vo.id}">
+                                <img class="news-pic" src="{$vo.img}" alt="">
+                            </a>
+                        </div>
+                        <div class="news-catalog">
+                            <div class="news-big">
+                                <a href="detail?id={$vo.id}">
+                                    <span class="news-black news-week">{$vo.title}</span>
+                                    <span class="news-date news-month">{$vo.create_time}</span>
+                                </a>
+                            </div>
+                            <div class="news-cell">
+                                <a href="detail?id={$vo.id}">{$vo.description}</a>
+                            </div>
+                        </div>
+                    </li>
+                    {/foreach}
+                </ul>
+
+                    <!--style调试上下间距-->
+                    <style>
+                        .page{PADDING-BOTTOM: 25px; MARGIN: 10px auto 0px; WIDTH: 98%; PADDING-TOP: 10px; TEXT-ALIGN: center}
+                        .page li{display: inline; BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 8px! important; BORDER-TOP: #ccc 1px solid; PADDING-LEFT: 8px! important; PADDING-BOTTOM: 4px! important; MARGIN: 2px; BORDER-LEFT: #ccc 1px solid; COLOR: #333; PADDING-TOP: 4px! important; BORDER-BOTTOM: #ccc 1px solid; TEXT-DECORATION: none! important}
+                        .page li.thisclass{background-color: white; border-color: #a7090a; color: #333;}
+                        .page li.thisclass a{color:#333;}
+                        .page li a{color:#B8B8B8}
+                    </style>
+                <div class="page" align="center">{$info->render()}</div>
+            </div>
+        </div>
+    </div>
+    <!--底部-->
+    {include file="public/foot"}
+</div>
+<script type="text/javascript" src="__XYSJS__/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="__XYSJS__/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="__XYSJS__/index.js"></script>
+<script type="text/javascript" src="__XYSJS__/aos.js" charset="utf-8"></script>
+<script type="text/javascript">jQuery(".nav").slide({ type:"menu",  titCell:".m", targetCell:".sub", effect:"slideDown", delayTime:300, triggerTime:100,returnDefault:true});</script>
+
+<script type="text/javascript">
+    AOS.init({
+        easing:'ease-out-back',
+        duration:800
+    });
+
+    document.body.addEventListener('touchstart',function(){
+            var mobileHover=function(){
+                $('*').on('touchstart',function(){
+                    $(this).trigger('hover');
+                }).on('touched',function(){
+                    $(this).trigger('hover');
+                })
+            }
+        }
+    );
+
+    $(function(){
+        cc("banner1",380);
+    });
+    function cc(id,w){
+        var i=0;
+        var id=$("#"+id);
+        var tab=id.children(".tab");
+        var tabLi=tab.find("li");
+        var clone=tabLi.first().clone();
+        tab.append(clone);
+        var size=tab.find("li").size();
+        var cur=id.children(".cur");
+        var curA=cur.children("a");
+        for(var j=0;j<size-1;j++){
+            cur.append("<a href='javascript:;'></a>");
+        }
+        cur.find("a").first().addClass("active");
+        /*鼠标划入圆点*/
+        cur.find("a").hover(function(){
+            var index=$(this).index();
+            i=index;
+            tab.stop().animate({left:-index*w},500)
+            $(this).addClass("active").siblings().removeClass("active")
+        });
+        /*自动轮播*/
+        var t=setInterval(function(){
+            i++;
+            move()
+        },2000)
+        /*对banner定时器的操作*/
+        id.hover(function(){
+            clearInterval(t);
+        },function(){
+            t=setInterval(function(){
+                i++;
+                move();
+            },2000)
+        });
+        function move(){
+            if(i==size){
+                tab.css({left:0});
+                i=1;
+            };
+            if(i==-1){
+                tab.css({left:-(size-1)*w});
+                i=size-2;
+            };
+            tab.stop().animate({left:-i*w},500);
+            if(i==size-1){
+                cur.children("a").eq(0).addClass("active").siblings().removeClass("active")
+            }else{
+                cur.children("a").eq(i).addClass("active").siblings().removeClass("active")
+            };
+        };
+    }
+
+
+</script>
+
+</body>
+</html>

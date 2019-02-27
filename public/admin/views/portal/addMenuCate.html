@@ -1,0 +1,62 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">门户菜单组</div>
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group" id="from">
+        <div class="layui-form-item">
+          <label class="layui-form-label">名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">标识</label>
+          <div class="layui-input-block">
+            <input type="text" name="key" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">是否主菜单</label>
+          <div class="layui-input-block">
+            <input type="radio" name="is_main" value="1" title="是">
+            <input type="radio" name="is_main" value="0" title="否" checked>
+          </div>
+        </div>
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <div class="">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['form', 'layer','tplay','apiconfig'], function(){
+    var $ = layui.$
+    ,layer = layui.layer
+    ,form = layui.form
+    ,tplay = layui.tplay
+    ,config = layui.apiconfig;
+
+    form.render();
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      tplay.ajax({
+        url:config.domain+"/admin/portal/addMenuCate",
+        type:"post",
+        data:$('#from').serialize(),
+        success:function(res){
+          layer.msg(res.msg);
+        }
+      })
+      return false;
+    });
+  });
+</script>

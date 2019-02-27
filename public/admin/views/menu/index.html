@@ -1,0 +1,374 @@
+<div class="tplay-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">后台菜单</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show tplay-btn">
+
+                <!-- <button data-method="setTop" class="layui-btn">多窗口模式，层叠置顶</button> -->
+                <button class="layui-btn layui-btn-normal" data-type="admin" data-events="add"><i class="layui-icon layui-icon-add-circle"></i>添加菜单</button>
+                <button class="layui-btn layui-btn-danger" data-type="admin" data-events="del"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+
+                <div class="layui-form demoTable" lay-filter="component-form-menu" style="float:left;margin-right:10px;">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" id="keyword" name="keyword" value="" placeholder="请输入关键词" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" style="width:100px;">
+                        <div class="layui-input-inline">
+                            <select>
+                                <option value="0" selected="">状态</option>
+                                <option value="1">在职</option>
+                                <option value="2">离职</option>
+                                <option value="3">聘用</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+
+                    <div class="layui-inline">
+                        <button class="layui-btn" data-type="reload"><i class="layui-icon layui-icon-search"></i>搜索</button>
+                    </div>
+                </div>
+
+                <table id="admin_menu" lay-filter="admin_menu">
+                    <script type="text/html" id="all_admin_menu">
+                        <!-- <div class="layui-btn-group"> -->
+                            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">
+                                <i class="layui-icon layui-icon-edit"></i>修改
+                            </a>
+                            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">
+                                <i class="layui-icon layui-icon-delete"></i>删除
+                            </a>
+                        <!-- </div> -->
+                    </script>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="addMenuTpl" type="text/html">
+    <form class="layui-form" lay-filter="add_menu" id="add_menu">
+        <div style="margin-top:20px;"></div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级菜单</label>
+            <div class="layui-input-inline">
+                <select name="pid">
+                    <option value="" selected>请选择</option>
+                    {{# for(var i = 0;i< d.data.length;i++){ }}
+                    <option value="{{ d.data[i].id }}">{{ d.data[i].title }}</option>
+                    {{# } }}
+                </select> 
+            </div>
+        </div>
+
+        <div id="add_menu"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" value="" required lay-verify="required" placeholder="请输入菜单名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单路由</label>
+            <div class="layui-input-inline">
+                <input type="text" name="path" value="" placeholder="请输入菜单路由" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单图标</label>
+            <div class="layui-input-inline">
+                <input type="text" name="icon" value="" placeholder="0" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-inline">
+                <input type="text" name="sort" value="" required lay-verify="required" placeholder="0" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="menu-add-submit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script id="editMenuTpl" type="text/html">
+    <form class="layui-form" lay-filter="edit_menu" id="edit_menu">
+        <input type="hidden" name="id" value="{{ d.id }}">
+        <div style="margin-top:20px;"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级菜单</label>
+            <div class="layui-input-inline">
+                <select name="pid">
+                    <option value="" selected>请选择</option>
+                    {{# for(var i = 0;i< d.data.length;i++){ }}
+                    <option value="{{ d.data[i].id }}" {{# if(d.pid == d.data[i].id) { }}selected{{# } }}>{{ d.data[i].title }}</option>
+                    {{# } }}
+                </select> 
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" value="{{ d.title }}" required lay-verify="required" placeholder="请输入菜单名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单路由</label>
+            <div class="layui-input-inline">
+                <input type="text" name="path" value="{{ d.path }}" placeholder="请输入菜单路由" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单图标</label>
+            <div class="layui-input-inline">
+                <input type="text" name="icon" value="{{ d.icon }}" placeholder="0" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-inline">
+                <input type="text" name="sort" value="{{ d.sort }}" required lay-verify="required" placeholder="0" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="menu-edit-submit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/javascript">
+layui.use(['form', 'table', 'element','tplay','apiconfig'], function(){
+    var $ = layui.$,
+    form = layui.form,
+    table = layui.table,
+    element = layui.element,
+    tplay = layui.tplay,
+    laytpl = layui.laytpl,
+    config = layui.apiconfig;
+
+    //监听Tab切换，以改变地址hash值
+    // element.on('tab(test1)', function(){
+    //     location.hash = 'test1='+ this.getAttribute('lay-id');
+    // });
+    form.render(null, 'component-form-menu');
+
+    menuList();
+
+    function menuList()
+    {
+        //菜单列表
+        table.render({
+            elem: '#admin_menu',
+            url: config.domain+'/admin/menu/index',
+            where: {access_token: layui.data('tplay').access_token},
+            // page: true,
+            // limit:15,
+            cols: [[
+                {type: 'checkbox', fixed: 'left', width:50},
+                {field: 'id',     title: 'ID',    width:50},
+                {field: 'str',  title: '级别',  width:100},
+                {field: 'sort', title: '排序',  width:60, align:'center'},
+                {field: 'icons', title: '图标',  width:60, align:'center'},
+                {field: 'title',  title: '菜单名称', width:150, edit:true},
+                {field: 'path',   title: '菜单路由'},
+                {fixed: 'right',  title: '操作', align:'center', width:200, toolbar: '#all_admin_menu'}
+            ]]
+            // ,skin: 'line'
+        });
+    }
+
+    var add_layer;
+
+    //事件处理
+    var events = {
+        del: function(othis, type)
+        {
+            var thisTabs = tabs[type],
+            checkStatus = table.checkStatus(thisTabs.id),
+            data = checkStatus.data; //获得选中的数据
+            if(data.length === 0) return layer.msg('未选中行');
+            var array = [];
+            for (var i = 0; i < data.length; i++) {
+                array.push(data[i].id);
+            }
+            layer.confirm('确定删除选中的数据吗？', function(){
+                tplay.ajax({
+                    url:config.domain+"/admin/menu/del",
+                    type:'post',
+                    data:{id:array},
+                    success:function(res)
+                    {
+                        layer.msg(res.msg);
+                        if(res.code == 1)
+                        {
+                            table.reload(thisTabs.id); //刷新表格
+                        }
+                    }
+                })
+            
+            });
+        },
+        add: function(othis, type)
+        {
+            // location.hash = '#/menu/add';
+
+            var cates;
+            tplay.ajax({url:config.domain+"/admin/menu/parentMenu",async:false,success:function(res){cates = res;}});
+            var getTpl = $('#addMenuTpl').html();
+            console.log(cates)
+            // view = document.getElementById('add_menu');
+            laytpl(getTpl).render(cates, function(html)
+            {
+                add_layer = layer.open({
+                    title: '添加菜单',
+                    type: 1,
+                    skin: 'layui-layer-demo',
+                    // skin: 'layui-layer-rim', //加上边框
+                    area: ['360px', '420px'], //宽高
+                    content: html,
+                });
+            });
+            form.render(null, 'add_menu');
+        },
+    };
+
+    //区分各选项卡中的表格
+    var tabs = {
+        admin: {
+            text: '管理员',
+            id: 'admin_menu'
+        },
+        // group: {
+        //   text: '权限组'
+        //   ,id: 'tplay-admin-group'
+        // }
+    };
+  
+    $('.tplay-btn .layui-btn').on('click', function(){
+        var othis = $(this),
+        thisEvent = othis.data('events'),
+        type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    var edit_layer;
+
+    //监听工具条
+    table.on('tool(admin_menu)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+   
+        if(layEvent === 'edit')
+        { //修改
+            // location.hash = '#/menu/edit?id='+data.id;
+
+            var cates;
+            tplay.ajax({url:config.domain+"/admin/menu/parentMenu",async:false,success:function(res){cates = res;}});
+            
+            // console.log(menu);return;
+            var getTpl = $('#editMenuTpl').html();
+            data.data = cates.data;
+            console.log(data)
+            // view = document.getElementById('edit_menu');
+            laytpl(getTpl).render(data, function(html)
+            {
+                // view.innerHTML = html;
+                edit_layer = layer.open({
+                    title: '编辑菜单',
+                    type: 1,
+                    skin: 'layui-layer-demo',
+                    // skin: 'layui-layer-rim', //加上边框
+                    area: ['360px', '420px'], //宽高
+                    content: html,
+                });
+            });
+            form.render(null, 'edit_menu');
+        } 
+        else if(layEvent === 'del')
+        { //删除
+            layer.confirm('真的删除行么', function(index){
+                tplay.ajax({
+                    url:config.domain+"/admin/menu/del",
+                    type:"post",
+                    data:{id:data.id},
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 1){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);
+                        }
+                    }
+                })
+            });
+        }
+    });
+
+    /* 监听提交 */
+    form.on('submit(menu-edit-submit)', function(data)
+    {
+        var url = config.domain+"/admin/menu/edit";
+        // console.log(data);return;
+        $.post(url, {data:data.field}, function(res)
+        {
+            layer.msg(res.msg);
+            setTimeout(function () 
+            {
+                layer.close(edit_layer);
+                menuList();//重新加载数据
+            }, 1000);
+        })
+        return false;
+    });
+
+    form.on('submit(menu-add-submit)', function(data)
+    {
+        var url = config.domain+"/admin/menu/add";
+        // console.log(data);return;
+        $.post(url, {data:data.field}, function(res)
+        {
+            layer.msg(res.msg);
+            setTimeout(function () 
+            {
+                layer.close(add_layer);
+                menuList();//重新加载数据
+            }, 1000);
+        })
+        // tplay.ajax({
+        //     url:config.domain+"/admin/portal/addCarousel",
+        //     type:"post",
+        //     data:$('#from').serialize(),
+        //     success:function(res)
+        //     {
+        //         layer.msg(res.msg);
+        //     }
+        // })
+        return false;
+    });
+
+});
+</script>

@@ -1,0 +1,203 @@
+<div class="tplay-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">菜单列表</li>
+        <!-- <li>菜单分组</li> -->
+      </ul>
+      <!-- <blockquote class="layui-elem-quote" style="margin-top:20px;">支持点击单元格进行编辑修改，注意：目前多级菜单只支持到2级</blockquote> -->
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show tplay-btn">
+          <button class="layui-btn layui-btn-normal" data-type="admin" data-events="add">新增</button>
+          <button class="layui-btn layui-btn-danger" data-type="admin" data-events="del">批量删除</button>
+          <div class="layui-form" style="margin-top: 10px;" lay-filter="component-form-group">
+            <div class="layui-input-inline">
+              <script id="menuCateList" type="text/html">
+                <select name="city" lay-filter="menuCateList">
+                  {{# for(var i = 0;i< d.data.length;i++){ }}
+                    <option value="{{ d.data[i].id }}" {{# if(d.data[i].is_main == 1){ }}selected{{# } }}>{{ d.data[i].name }}</option>
+                  {{# } }}
+                </select> 
+              </script>
+              <div id="add_menu"></div>
+            </div>
+          </div>
+          <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+          </table>
+        </div>
+        <div class="layui-tab-item tplay-btn">
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="add_group">新增</button>
+          <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="group" data-events="del_group">批量删除</button>
+          <table id="tplay-admin-group" lay-filter="tplay-admin-group">
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig','laytpl','form'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,element = layui.element
+  ,laytpl = layui.laytpl
+  ,tplay = layui.tplay
+  ,form = layui.form
+  ,config = layui.apiconfig;
+
+  var cates;
+  tplay.ajax({url:config.domain+"/admin/index/indexMenuCate",async:false,success:function(res){cates = res;}});
+  var getTpl = $('#menuCateList').html()
+  ,view = document.getElementById('add_menu');
+  laytpl(getTpl).render(cates, function(html){
+    view.innerHTML = html;
+  });
+
+  form.render(null, 'component-form-group');
+
+  form.on('select(menuCateList)', function(data){
+      tableIns.reload({where:{carousel_cate_id:data.value}});
+  });
+
+  //菜单
+  var tableIns = table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/portal/menu'
+    ,where: {access_token: layui.data('tplay').access_token}
+    ,page: false
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'str', title: '级别'}
+      ,{field: 'name', title: '名称',edit:'text'}
+      ,{field: 'href', title: '链接',edit:'text'}
+      ,{field: 'index_menu_cate_id', title: '分组ID',edit:'text'}
+      ,{field: 'status', title: '状态(1可用-1禁用)',edit:'text'}
+      ,{field: 'is_target', title: '新窗口打开?(1是0否)',edit:'text'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //单元格编辑
+  table.on('edit(tplay-admin-all)', function(obj){
+    tplay.ajax({
+      url:config.domain+"/admin/portal/editMenu",
+      type:'post',
+      data:{id:obj.data.id,field:obj.field,value:obj.value},
+      success:function(res){
+        if(res.code !== 1){
+          layer.msg(res.msg);
+        }
+      }
+    })  
+  });
+  
+  //菜单组
+  table.render({
+    elem: '#tplay-admin-group'
+    ,url: config.domain+'/admin/portal/menuCate'
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'name', title: '名称',edit:'text'}
+      ,{field: 'key', title: '标识',edit:'text'}
+      ,{field: 'is_main', title: '是否主菜单?(1是0否)',edit:'text'}
+      ,{field: 'create_time', title: '创建时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //单元格编辑
+  table.on('edit(tplay-admin-group)', function(obj){
+    tplay.ajax({
+      url:config.domain+"/admin/portal/editMenuCate",
+      type:'post',
+      data:{id:obj.data.id,field:obj.field,value:obj.value},
+      success:function(res){
+        if(res.code !== 1){
+          layer.msg(res.msg);
+        }
+      }
+    })  
+  });
+
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('确定删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/portal/delMenu",
+          type:'post',
+          data:{id:array},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+        
+      });
+    }
+    ,add: function(othis, type){
+      location.hash = '#/portal/addMenu';
+    }
+    ,add_group: function(othis, type){
+      location.hash = '#/portal/addMenuCate';
+    }
+    ,del_group: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('确定删除选中的数据吗？', function(){
+        $.ajax({
+          url:config.domain+"/admin/portal/delMenuCate",
+          type:'post',
+          data:{id:array},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+        
+      });
+    }
+  };
+
+  //区分各选项卡中的表格
+  var tabs = {
+    admin: {
+      text: '菜单'
+      ,id: 'tplay-admin-all'
+    },
+    group: {
+      text: '菜单组'
+      ,id: 'tplay-admin-group'
+    }
+  };
+  
+  $('.tplay-btn .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+});
+</script>

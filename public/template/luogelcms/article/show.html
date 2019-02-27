@@ -1,0 +1,62 @@
+{include file="public/header"}
+<link rel="stylesheet" href="__PUBLIC__/qqFace/css/reset.css">
+    <div class="tplay-body">
+      <h1 class="tplay-body-h1" id="tplay-title">{$info.title}</h1>
+      <style type="text/css">
+        body .tplay-content img{max-width: 100%;}
+      </style>
+      <div class="tplay-body-content">
+        <div class="tplay-content-header">
+          <div class="tplay-content-header-left">
+            {:date('Y,m,d',strtotime($info.create_time))}<i class="layui-icon tplay-body-star tplay-margin-left-15" style="font-size: 12px;">&#xe62c;</i> {$info.num} ℃<i class="layui-icon tplay-margin-left-15" style="font-size: 12px;">&#xe611;</i> {$messages->total()}
+          </div>
+          <div class="tplay-content-header-right">
+            <a href="javascript:;" class="tplay-msg-tag"><i class="fa fa-pencil tplay-margin-left-15"></i></a>
+            <a href="javascript:;" id="share"><i class="fa fa-share-alt tplay-margin-left-15"></i></a>
+          </div>
+        </div>
+        <div class="tplay-content">{$info.content}</div>
+      </div>
+      <div class="tplay-quick">
+        <p class="tplay-quick-last">上一篇：{empty name="$info.last"}没有了{else /}<a href="{:url('index/article/show',['id'=>$info.last.id])}" title="{$info.last.title}">{$info.last.title}</a>{/empty}</p>
+        <p class="tplay-quick-next">下一篇：{empty name="$info.next"}没有了{else /}<a href="{:url('index/article/show',['id'=>$info.next.id])}" title="{$info.next.title}">{$info.next.title}</a>{/empty}</p>
+      </div>
+      <div class="tplay-msg" id="tplay-msg">
+        <form class="layui-form" id="messages">
+          <textarea name="message" required lay-verify="required" placeholder="“@name ”格式可以直接回复ta" class="layui-textarea" id="message"></textarea>
+          <input type="hidden" name="content_id" value="{$info.id}">
+          <a href="javascript:;" class="tplay-msg-emotion"><i class="layui-icon">&#xe60c;</i></a>
+          {notempty name="$user"}
+          <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm tplay-msg-btn">重写</button>
+          <button class="layui-btn layui-btn-sm tplay-msg-btn" lay-submit lay-filter="messages">提交发言</button>
+          {else /}
+          <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-disabled tplay-msg-btn">提交发言</a>
+          <a href="{:url('index/user/login')}" class="layui-btn layui-btn-sm tplay-msg-btn" target="_blank">登录</a>
+          {/notempty}
+        </form>
+        <hr>
+        <ul class="tplay-msg-lst">
+          {notempty name="$messages"}
+          {volist name="$messages" id="vo"}
+          <li>
+            <div>
+              <a href="javascript:;" class="tplay-msg-reply tplay-msg-tag" data-name="{$vo.user.name}">回复ta</a>
+              <img src="{notempty name="$vo.user.thumb"}{$vo.user.thumb}{else /}__IMG__/msg.jpg{/notempty}" width="40" height="40" class="tplay-msg-thumb" />
+              <span class="msg_user_name">{$vo.user.name}</span>
+              <span class="msg_create_time">{:date('Y-m-d H:i:s',strtotime($vo.create_time))}</span>
+            </div>
+            <p>{$vo.message}</p>
+          </li>
+          {/volist}
+        </ul>
+        <div class="tplay-msg-page">{$messages->render()}</div><div class="tplay-clear"></div>
+        {else /}
+        <p class="tplay-msg-null">这里似乎空空如也~</p>
+        {/notempty}
+      </div>
+    </div>
+{include file="public/footer"}
+  <script src="__PUBLIC__/qqFace/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/qqFace/js/jquery.qqFace.js"></script>
+  <script src="__JS__/tplay-clipboard.js"></script>
+  <script src="__JS__/tplay-article.js"></script>

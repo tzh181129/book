@@ -1,0 +1,66 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">系统配置</div>
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" id="from">
+        <div class="layui-form-item">
+          <label class="layui-form-label">key</label>
+          <div class="layui-input-block">
+            <input type="text" name="key" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form">
+          <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+              <input type="radio" name="type" value="1" title="对象">
+              <input type="radio" name="type" value="0" title="单值" checked>
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">值</label>
+          <div class="layui-input-block">
+            <input type="text" name="value" lay-verify="pass" placeholder="如果选择了对象类型，此处的值应该是一个标准的json数据" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <div class="">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['form', 'layer','tplay','apiconfig'], function(){
+    var $ = layui.$
+    ,layer = layui.layer
+    ,form = layui.form
+    ,tplay = layui.tplay
+    ,config = layui.apiconfig;
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      tplay.ajax({
+        url:config.domain+"/admin/system/add",
+        type:"post",
+        data:$('#from').serialize(),
+        success:function(res){
+          layer.msg(res.msg);
+        }
+      })
+      return false;
+    });
+  });
+</script>

@@ -1,0 +1,67 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">更换密码</div>
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group" id="from">
+        <div class="layui-form-item">
+          <label class="layui-form-label">旧密码</label>
+          <div class="layui-input-block">
+            <input type="password" name="old_pwd" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">新密码</label>
+          <div class="layui-input-block">
+            <input type="password" name="password" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">确认新密码</label>
+          <div class="layui-input-block">
+            <input type="password" name="password_confirm" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <div class="">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['form', 'layer','tplay','apiconfig'], function(){
+    var $ = layui.$
+    ,layer = layui.layer
+    ,form = layui.form
+    ,tplay = layui.tplay
+    ,config = layui.apiconfig;
+  
+    /* 自定义验证规则 */
+    form.verify({
+      pass: [/(.+){6,12}$/, '密码必须6到18位']
+      ,content: function(value){
+        layedit.sync(editIndex);
+      }
+    });
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      tplay.ajax({
+        url:config.domain+"/admin/admin/editPwd",
+        type:"post",
+        data:$('#from').serialize(),
+        success:function(res){
+          layer.msg(res.msg);
+        }
+      })
+      return false;
+    });
+  });
+</script>

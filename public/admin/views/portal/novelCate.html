@@ -1,0 +1,432 @@
+<div class="tplay-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">书籍分类管理</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="tplay-btn">
+                <button class="layui-btn layui-btn-normal" data-type="group" data-events="add"><i
+                        class="layui-icon layui-icon-add-circle"></i>新增书籍分类
+                </button>
+
+                <table id="data-list" lay-filter="data-list">
+                    <script type="text/html" id="op_data_status">
+                        {{#  if(d.status ==1){ }}
+                        <span style="color:#1E9FFF">显示 </span>
+                        {{#  } else { }}
+                        <span style="color:#FF5722">隐藏 </span>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="op_data_list">
+                        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">
+                            <i class="layui-icon layui-icon-edit"></i>编辑
+                        </a>
+                        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">
+                            <i class="layui-icon layui-icon-delete"></i>删除
+                        </a>
+                    </script>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script id="addDataTpl" type="text/html">
+    <form class="layui-form" lay-filter="add-data" id="add-data" style="padding-right: 30px">
+        <div style="margin-top:20px;"></div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍分类名称</label>
+            <div class="layui-input-block">
+                <input type="text" required name="title" placeholder="请输入书籍分类名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍所属</label>
+            <div class="layui-input-inline">
+                <select name="pid">
+                    <option value="0">作为主分类</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍分类状态</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="status" value="1" title="显示" checked>
+                <input type="radio" name="status" value="0" title="隐藏">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" data-type="content" lay-filter="data-add-submit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</script>
+<script id="editAnswerTpl" type="text/html">
+    <form class="layui-form" lay-filter="edit-answer" id="edit-answer" style="padding-right: 30px">
+        <div style="margin-top:20px;"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍名称</label>
+            <div class="layui-input-block">
+                <input type="text" required name="title" placeholder="请输入书籍名称" value="{{d.title}}" autocomplete="off"
+                       class="layui-input">
+                <input type="hidden" name="id" value="{{d.id}}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍作者</label>
+            <div class="layui-input-block">
+                <input type="text" required name="author" placeholder="请填写书籍作者" value="{{d.author}}" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍分类</label>
+            <div class="layui-input-inline">
+                <select name="type">
+                    <option value="传记名著" selected>传记名著</option>
+                    <option value="出版小说" >出版小说</option>
+                    <option value="人文社科" >人文社科</option>
+                    <option value="经管理财" >经管理财</option>
+                    <option value="政治军事" >政治军事</option>
+                    <option value="外文原版" >外文原版</option>
+                    <option value="育儿健康" >育儿健康</option>
+                    <option value="玄幻" >玄幻</option>
+                    <option value="奇幻" >奇幻</option>
+                    <option value="武侠" >武侠</option>
+                    <option value="仙侠" >仙侠</option>
+                    <option value="都市" >都市</option>
+                    <option value="职场" >职场</option>
+                    <option value="历史" >历史</option>
+                    <option value="游戏" >游戏</option>
+                    <option value="竞技" >竞技</option>
+                    <option value="科幻" >科幻</option>
+                    <option value="灵异" >灵异</option>
+                    <option value="言情" >言情</option>
+                    <option value="青春校园" >青春校园</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务首页图片</label>
+            <div class="layui-input-block">
+                {{# if(d.img){ }}
+                <div class="layui-upload-drag" id="editImage">
+                    <img src="{{d.img}}" style="max-width: 330px;">
+                </div>
+                {{# }else{ }}
+                <div class="layui-upload-drag" id="editImage">
+                    <i class="layui-icon"></i>
+                    <p>点击上传，或将文件拖拽到此处</p>
+                </div>
+                {{# } }}
+                <input type="hidden" name="img" id="editImg" value="{{d.img}}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍是否显示</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="status" value="1" title="显示" {{# if(d.status== 1){ }}checked{{# } }}>
+                <input type="radio" name="status" value="0" title="隐藏" {{# if(d.status== 0){ }}checked{{# } }}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍是否完结</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="is_finish" value="1" title="是" {{# if(d.is_finish== 1){ }}checked{{# } }}>
+                <input type="radio" name="is_finish" value="0" title="否" {{# if(d.is_finish== 0){ }}checked{{# } }}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍是否推荐</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="order" value="1" title="是" {{# if(d.order== 1){ }}checked{{# } }}>
+                <input type="radio" name="order" value="0" title="否" {{# if(d.order== 0){ }}checked{{# } }}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">书籍简介</label>
+            <div class="layui-input-block">
+                <textarea name="description" placeholder="书籍简介" class="layui-textarea">{{d.description}}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="answer-edit-submit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+
+<style type="text/css">
+    /*tbody tr td .layui-table-cell {
+        height: 60px;
+        line-height: 54px;
+    }*/
+
+    tbody tr td .layui-table-cell {
+        height: 80px;
+        line-height: 54px;
+    }
+
+    tbody tr td .layui-table-cell img {
+        width: 50px;
+        border-radius: 5px;
+    }
+
+</style>
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate', 'upload', 'laytpl', 'table', 'element', 'tplay', 'route', 'apiconfig'], function () {
+        var $ = layui.$
+            , table = layui.table
+            , form = layui.form
+            , element = layui.element
+            , tplay = layui.tplay
+            , route = layui.route
+            , laytpl = layui.laytpl
+            , upload = layui.upload
+            , laydate = layui.laydate
+            , layedit = layui.layedit
+            , config = layui.apiconfig;
+
+        // var id = window.location.href.split("=")[1]
+        form.render(null, 'component-form-data');
+        //常规用法
+        laydate.render({
+            elem: '#test1'
+        });
+        //管理员
+        table.render({
+            elem: '#data-list'
+            , url: config.domain + '/admin/portal/novelCate'
+            , page: true
+            , limit: 15
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', width: 60, align: 'center'}
+                , {field: 'title', title: '书籍分类名称', width: 200, align: 'center'}
+                , {field: 'name', title: '所属分类', width: 170, align: 'center'}
+                , {field: 'status', title: '书籍是否显示', width: 200, align: 'center', toolbar: '#op_data_status'}
+                , {fixed: 'right', width: 300, align: 'center', title: '操作', toolbar: '#op_data_list'}
+            ]]
+            // ,skin: 'line'
+        });
+
+
+        //事件处理
+        var events = {
+            add: function (othis, type) {
+                // var skill;
+                var result;
+                tplay.ajax({
+                    url: config.domain + "/admin/portal/addNovelCate",
+                    // data:{id:route.params().id},
+                    type: 'get',
+                    async: false,
+                    success: function (res) {
+                        result = res;
+                    }
+                });
+
+                if (result.code != 1) {
+                    layer.msg(result.msg);
+                    return;
+                }
+                console.log(result);
+                var getTpl = $('#addDataTpl').html();
+                laytpl(getTpl).render(result.data, function (html) {
+                    add_layer = layer.open({
+                        title: '添加书籍',
+                        type: 1,
+                        skin: 'layui-layer-demo',
+                        area: ['800px', '600px'], //宽高
+                        content: html,
+                    });
+                });
+
+                //拖拽上传
+                upload.render({
+                    elem: '#image'
+                    , url: config.domain + "/admin/index/uploads?use=article"
+                    , done: function (res) {
+                        $("#img").val(res.data);//保存图片文件
+                        $("#image").html('<img style="width:100%" src="' + res.data + '">')
+                    }
+                });
+
+                form.on('select(menuCate)', function (data) {
+                    var menus;
+                    tplay.ajax({
+                        url: config.domain + "/admin/index/content?content_cate_id=" + data.value,
+                        async: false,
+                        success: function (res) {
+                            menus = res;
+                        }
+                    });
+                    var optionstring = "";
+                    $.each(menus.data, function (i, item) {
+                        optionstring += "<option value=\"" + item.id + "\" >" + item.title + "</option>";
+                    });
+                    $("#menus").html('<option>请选择分类</option>' + optionstring);
+                    form.render('select');
+                });
+
+                //常规用法
+                laydate.render({
+                    elem: '#test1'
+                });
+
+                form.render(null, 'add-data');
+            }
+
+            , del_group: function (othis, type) {
+                var thisTabs = tabs[type]
+                    , checkStatus = table.checkStatus(thisTabs.id)
+                    , data = checkStatus.data; //获得选中的数据
+                if (data.length === 0) return layer.msg('未选中行');
+                var array = [];
+                for (var i = 0; i < data.length; i++) {
+                    array.push(data[i].id);
+                }
+                layer.confirm('确定删除选中的数据吗？', function () {
+                    $.ajax({
+                        url: config.domain + "/admin/portal/del",
+                        type: 'post',
+                        data: {id: array},
+                        success: function (res) {
+                            layer.msg(res.msg);
+                            if (res.code == 1) {
+                                table.reload(thisTabs.id); //刷新表格
+                            }
+                        }
+                    })
+                });
+            }
+        };
+
+        $('.tplay-btn .layui-btn').on('click', function () {
+            var othis = $(this)
+                , thisEvent = othis.data('events')
+                , type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        //监听工具条
+        table.on('tool(data-list)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'edit') { //修改
+                tplay.ajax({
+                    url: config.domain + "/admin/portal/editNovel",
+                    type: 'get',
+                    data: data,
+                    async: false,
+                    success: function (res) {
+                        console.log(res)
+                        if (res.code == 1) {
+                            var editTpl = $('#editAnswerTpl').html();
+                            laytpl(editTpl).render(res.data, function (html) {
+                                edit_layer = layer.open({
+                                    title: '编辑书籍',
+                                    type: 1,
+                                    skin: 'layui-layer-demo',
+                                    area: ['800px', '600px'], //宽高
+                                    content: html,
+                                });
+                            });
+
+                            //拖拽上传
+                            upload.render({
+                                elem: '#editImage'
+                                , url: config.domain + "/admin/index/uploads?use=article"
+                                // ,accept: 'video'
+                                , done: function (res) {
+                                    $("#editImg").val(res.data);//保存图片文件id
+                                    $("#editImage").html('<img style="width:100%" src="' + res.data + '">')
+                                }
+                            });
+
+                            //常规用法
+                            laydate.render({
+                                elem: '#test1'
+                            });
+                            form.render(null, 'edit-answer');
+                        }
+                        else {
+                            layer.msg(res.msg);
+                        }
+                    }
+                });
+            }
+            else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除行么', function (index) {
+                    tplay.ajax({
+                        url: config.domain + "/admin/portal/delNovel",
+                        type: "post",
+                        data: {id: data.id},
+                        success: function (res) {
+                            layer.msg(res.msg);
+                            if (res.code == 1) {
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'look') { //查看书籍
+                location.hash = '#/portal/chapter?novel_id=' + data.id;
+            }
+        });
+
+        form.on('submit(data-add-submit)', function (data) {
+            tplay.ajax({
+                url: config.domain + "/admin/portal/addNovel",
+                type: "post",
+                data: $('#add-data').serialize(),
+                success: function (res) {
+                    layer.msg(res.msg);
+                    if (res.code == 1) {
+                        layer.close(add_layer);
+                        table.reload("data-list")
+                    }
+                }
+            })
+            return false;
+        });
+
+        form.on('submit(answer-edit-submit)', function (data) {
+            tplay.ajax({
+                url: config.domain + "/admin/portal/editNovel",
+                type: "post",
+                data: $('#edit-answer').serialize(), success: function (res) {
+                    layer.msg(res.msg);
+                    if (res.code == 1) {
+                        layer.close(edit_layer);
+                        chapterList();
+                    }
+                }
+            })
+            return false;
+        });
+
+
+    });
+</script>
+
+

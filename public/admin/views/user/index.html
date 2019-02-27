@@ -1,0 +1,89 @@
+<div class="tplay-body">
+    <div class="layui-tab-content">
+      <div class="tplay-btn">
+        <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="shielding">拉黑</button>
+        <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+          <script type="text/html" id="admin_group_status">
+              {{#  if(d.status == 1){ }}
+                <span style="color:#1E9FFF">正常 </span>  
+              {{#  } else { }}
+                <span style="color:#FF5722">禁止登录 </span> 
+              {{#  } }}
+            </script>
+        </table>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,element = layui.element
+  ,tplay = layui.tplay
+  ,config = layui.apiconfig;
+
+  //会员
+  table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/user/index'
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID'}
+      ,{field: 'name', title: '名称'}
+      ,{field: 'status', title: '状态'}
+      ,{field: 'create_time', title: '注册时间'}
+      ,{field: 'last_login_time', title: '最后登录时间'}
+      ,{field: 'last_login_ip', title: '最后登录IP'}
+      ,{field: 'status', title: '状态',toolbar: '#admin_group_status'}
+      ,{field: 'login_num', title: '登录次数'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //事件处理
+  var events = {
+    shielding: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].id);
+      }
+      layer.confirm('确定拉黑选中的用户吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/user/shielding",
+          type:'post',
+          data:{id:array},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+        
+      });
+    }
+  };
+
+  //区分各选项卡中的表格
+  var tabs = {
+    admin: {
+      text: '管理员'
+      ,id: 'tplay-admin-all'
+    }
+  };
+  
+  $('.tplay-btn .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+});
+</script>

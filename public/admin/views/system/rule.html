@@ -1,0 +1,255 @@
+<div class="tplay-body">
+    <div class="layui-tab-content">
+        <div class="tplay-btn">
+            <!-- <blockquote class="layui-elem-quote">支持点击单元格进行编辑修改</blockquote> -->
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="add">新增</button> -->
+            <button class="layui-btn layui-btn-normal" data-type="admin" data-events="add"><i class="layui-icon layui-icon-add-circle"></i>新增节点</button>
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="del">批量删除</button> -->
+            <button class="layui-btn layui-btn-danger" data-type="admin" data-events="del"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+            <table id="admin-rule-all" lay-filter="admin-rule-all">
+                <script type="text/html" id="all_admin_rule">
+                    <div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+                        <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del">删除</a>
+                    </div>
+                </script>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script id="childMenuTpl" type="text/html">
+    <div class="layui-form-item">
+        <label class="layui-form-label">子级菜单</label>
+        <div class="layui-input-inline">
+            <select name="cid" lay-filter="child_menu">
+                <option value="" selected>请选择</option>
+                {{# for(var i = 0;i< d.data.length;i++){ }}
+                <option value="{{ d.data[i].id }}">{{ d.data[i].title }}</option>
+                {{# } }}
+            </select> 
+        </div>
+    </div>
+</script>
+
+<script id="addRuleTpl" type="text/html">
+    <form class="layui-form" lay-filter="add_rule" id="add_rule">
+        <div style="margin-top:20px;"></div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级菜单</label>
+            <div class="layui-input-inline">
+                <select name="pid" lay-filter="parent_menu">
+                    <option value="" selected>请选择</option>
+                    {{# for(var i = 0;i< d.data.length;i++){ }}
+                    <option value="{{ d.data[i].id }}">{{ d.data[i].title }}</option>
+                    {{# } }}
+                </select> 
+            </div>
+        </div>
+
+        <div id="child_menu"></div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">节点名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">规则</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">附加规则</label>
+            <div class="layui-input-inline">
+                <input type="text" name="condition" placeholder="一般情况下留空" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="rule-add-submit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig'], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,table = layui.table
+    ,element = layui.element
+    ,tplay = layui.tplay
+    ,laytpl = layui.laytpl
+    ,config = layui.apiconfig;
+
+    ruleList();
+
+    function ruleList()
+    {
+        //节点列表
+        table.render({
+            elem: '#admin-rule-all'
+            ,url: config.domain+'/admin/rule/index'
+            ,where: {access_token: layui.data('tplay').access_token}
+            ,page: true
+            ,limit:15
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'title', title: '名称',edit:'text'}
+                ,{field: 'name', title: '规则',edit:'text'}
+                ,{field: 'condition', title: '附加规则',edit:'text'}
+                ,{field: 'create_time', title: '创建时间'}
+            ]]
+            ,skin: 'line'
+        });
+    }
+
+    //单元格编辑
+    table.on('edit(admin-rule-all)', function(obj){
+        tplay.ajax({
+            url:config.domain+"/admin/rule/edit",
+            type:'post',
+            data:{id:obj.data.id,field:obj.field,value:obj.value},
+            success:function(res){
+                if(res.code !== 1){
+                    layer.msg(res.msg);
+                }
+            }
+        })  
+    });
+
+    var add_layer;
+
+    //事件处理
+    var events = {
+        del: function(othis, type){
+            var thisTabs = tabs[type]
+            ,checkStatus = table.checkStatus(thisTabs.id)
+            ,data = checkStatus.data; //获得选中的数据
+            if(data.length === 0) return layer.msg('未选中行');
+            var array = [];
+            for (var i = 0; i < data.length; i++) {
+                array.push(data[i].id);
+            }
+            layer.confirm('确定删除选中的数据吗？', function(){
+                tplay.ajax({
+                    url:config.domain+"/admin/rule/del",
+                    type:'post',
+                    data:{id:array},
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 1){
+                            table.reload(thisTabs.id); //刷新表格
+                        }
+                    }
+                })
+            
+            });
+        }
+        // ,add: function(othis, type){
+        //     location.hash = '#/system/addRule';
+        // }
+        ,add: function(othis, type){
+            var cates;
+            tplay.ajax({url:config.domain+"/admin/menu/parentMenu",async:false,success:function(res){cates = res;}});
+            // tplay.ajax({url:config.domain+"/admin/menu/childMenu",type:'post',data:res,async:false,success:function(res){child = res;}});
+            var getTpl = $('#addRuleTpl').html();
+            console.log(cates)
+            // view = document.getElementById('add_rule');
+            laytpl(getTpl).render(cates, function(html)
+            {
+                add_layer = layer.open({
+                    title: '添加节点',
+                    type: 1,
+                    skin: 'layui-layer-demo',
+                    // skin: 'layui-layer-rim', //加上边框
+                    area: ['360px', '480px'], //宽高
+                    content: html,
+                });
+            });
+            form.render(null, 'add_rule');
+        }
+    };
+
+    form.on('select(parent_menu)', function (data) 
+    {
+        console.log(data.value)
+        tplay.ajax({
+            url:config.domain+"/admin/menu/childMenu",
+            type:"post",
+            data:{pid:data.value},
+            success:function(res)
+            {
+                var getTpl = $('#childMenuTpl').html();
+                view = document.getElementById('child_menu');
+
+                if (res.data.length != 0) 
+                {
+                    laytpl(getTpl).render(res, function(html)
+                    {
+                        view.innerHTML = html;
+                    });
+                }
+                else
+                {
+                    view.innerHTML = '';
+                }
+
+                form.render(null, 'add_rule');
+                
+                // layer.msg(res);
+                console.log(res.data)
+
+            }
+        })
+
+    });
+
+    //区分各选项卡中的表格
+    var tabs = {
+        admin: {
+            text: '节点管理'
+            ,id: 'admin-rule-all'
+        },
+        // group: {
+        //     text: '权限组'
+        //     ,id: 'tplay-admin-group'
+        // }
+    };
+  
+    $('.tplay-btn .layui-btn').on('click', function(){
+        var othis = $(this)
+        ,thisEvent = othis.data('events')
+        ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    /* 监听提交 */
+    form.on('submit(rule-add-submit)', function(data)
+    {
+        tplay.ajax({
+            url:config.domain+"/admin/rule/add",
+            type:"post",
+            data:$('#add_rule').serialize(),
+            success:function(res)
+            {
+                layer.msg(res.msg);
+                if(res.code == 1)
+                {
+                    layer.close(add_layer);
+                    ruleList();
+                }
+            }
+        })
+        return false;
+
+    });
+});
+</script>

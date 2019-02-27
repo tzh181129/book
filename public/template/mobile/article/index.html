@@ -1,0 +1,25 @@
+{include file="public/header"}
+    <div class="tplay-body">
+    {notempty name="$info"}
+      <ul class="tplay-body-ul">
+        {volist name="$info" id="vo"}
+        <li class="tplay-body-li">
+          <h2><a href="{:url('index/article/show',['id'=>$vo.id])}">{$vo.title}</a></h2>
+          <p>{$vo.description}</p>
+          <span>
+            <i class="layui-icon" style="font-size: 14px;">&#xe62e;</i> {$vo.contentCate.name}   
+            <i class="layui-icon tplay-body-star tplay-margin-left-15" style="font-size: 12px;">&#xe62c;</i> {$vo.num} ℃
+            <i class="layui-icon tplay-margin-left-15" style="font-size: 12px;">&#xe611;</i> {$vo.message_count}
+            <i class="tplay-margin-left-15"></i>Updated {:date('Y,m,d',strtotime($vo.create_time))}
+          </span>
+        </li>
+        {/volist}
+        <div class="tplay-clear"></div>
+      </ul>
+      <div class="tplay-msg-page">{$info->render()}</div><div class="tplay-clear"></div>
+      {else /}
+      <p class="tplay-msg-null">这里似乎空空如也~</p>
+      {/notempty}
+    </div>
+{include file="public/footer"}
+    <script src="__JS__/tplay-index.js"></script>

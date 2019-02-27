@@ -1,0 +1,200 @@
+<script type="text/javascript">window.UEDITOR_HOME_URL = "/static/ueditor/"</script>
+<form class="layui-form" lay-filter="admin_add" id="admin_add">
+  <div class="tplay-body">
+    <div class="layui-row layui-col-space15">
+      <script id="editAdmin" type="text/html">
+      <div class="layui-col-md6">
+          <div class="layui-card-header">基本信息</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <input type="text" required name="title" placeholder="标题" autocomplete="off" class="layui-input" value="{{ d.data.content.title }}">
+            </div>
+            <div class="layui-col-md12">
+              <input type="text" required name="tag" placeholder="关键词，用,隔开" autocomplete="off" class="layui-input" value="{{ d.data.content.tag }}">
+            </div>
+            <div class="layui-col-md12">
+              <textarea name="description" placeholder="摘要" class="layui-textarea">{{ d.data.content.description }}</textarea>
+            </div>
+            <input type="hidden" name="id" value="{{ d.data.content.id }}">
+          </div>
+        <div class="layui-form">
+          <div class="layui-card-header">分组/分类</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md6">
+              <select lay-filter="menuCate">
+                {{# for(var i = 0;i< d.data.group.length;i++){ }}
+                  <option value="{{ d.data.group[i].id }}" {{# if(d.data.this_group_id == d.data.group[i].id){ }}selected{{# } }}>{{ d.data.group[i].name }}</option>
+                {{# } }}
+              </select> 
+            </div>
+            <div class="layui-col-md6">
+                <select name="content_cate_id" id="menus">
+                    {{# for(var i = 0;i< d.data.cate.length;i++){ }}
+                      <option value="{{ d.data.cate[i].id }}" {{# if(d.data.content.content_cate_id == d.data.cate[i].id){ }}selected{{# } }}>{{ d.data.cate[i].str }}{{ d.data.cate[i].name }}</option>
+                    {{# } }}
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form">
+          <div class="layui-card-header">状态</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <input type="radio" name="status" value="1" title="正常显示" {{# if(d.data.content.status == 1){ }}checked{{# } }}>
+              <input type="radio" name="status" value="0" title="禁止显示" {{# if(d.data.content.status == 0){ }}checked{{# } }}>
+            </div>
+          </div>
+        </div>
+          <div class="layui-form">
+              <div class="layui-card-header">是否新闻精选/产品图片是否向右</div>
+              <div class="layui-card-body layui-row layui-col-space10">
+                  <div class="layui-col-md12">
+                      <input type="radio" name="order" value="1" title="是" {{# if(d.data.content.order == 1){ }}checked{{# } }}>
+                      <input type="radio" name="order" value="0" title="否" {{# if(d.data.content.order == 0){ }}checked{{# } }}>
+                  </div>
+              </div>
+          </div>
+        <!-- <div class="layui-form">
+          <div class="layui-card-header">相册</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test2">多图片上传</button> 
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                  <div class="layui-upload-list" id="demo2">
+                    {{# for(var i = 0;i< d.data.content.img.length;i++){ }}
+                      <img src="{{ d.data.content.img[i] }}" style="max-width:20%;" />
+                      <input type="hidden" value="{{ d.data.content.img[i] }}" name="img[]">
+                    {{# } }}
+                  </div>
+               </blockquote>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="layui-form">
+            <div class="layui-card-header">图片</div>
+            <div class="layui-card-body layui-row layui-col-space10">
+                <div class="layui-col-md12">
+                    <div class="layui-upload">
+                        <div class="layui-upload-drag" id="test10">
+                            <i class="layui-icon"></i>
+                            <p>点击上传，或将文件拖拽到此处</p>
+                        </div>
+                        <div class="" id="demo10">
+                            <img src="{{ d.data.content.img }}" style="max-width:20%;" />
+                            <input type="hidden" value="{{ d.data.content.img }}" name="img[]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="layui-col-md12">
+          <div class="layui-card-header">详情</div>
+          <div class="layui-card-body layui-row layui-col-space10">
+            <div class="layui-col-md12">
+              <textarea name="content" placeholder="请输入" class="layui-textarea" id="container" style="border:0;padding:0">{{ d.data.content.content }}</textarea>
+            </div>
+          </div>
+          <div class="layui-form-item">
+          <div class="layui-input-block">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+          </div>
+        </div>
+      </div>
+      </script>
+      <div id="edit_view"></div>
+    </div>
+  </div>
+</form>
+
+<script type="text/javascript">
+layui.use(['form','route','laytpl','tplay','apiconfig','upload'], function(){
+  var $ = layui.$
+  ,route = layui.route
+  ,laytpl = layui.laytpl
+  ,form = layui.form
+  ,tplay = layui.tplay
+  ,config = layui.apiconfig
+  ,upload = layui.upload;
+
+  tplay.ajax({
+    url:config.domain+"/admin/portal/editContent",
+    type:'get',
+    data:{id:route.params().id},
+    async:false,success:function(res){
+      if(res.code == 1){
+        var editTpl = $('#editAdmin').html()
+        ,view = document.getElementById('edit_view');
+        laytpl(editTpl).render(res, function(html){
+          view.innerHTML = html;
+        });
+      } else {
+        layer.msg(res.msg);
+      }
+    }
+  });
+
+  form.render(null, 'admin_add');
+
+  form.on('select(menuCate)', function(data){
+      var menus;
+      tplay.ajax({url:config.domain+"/admin/index/contentCate?group_id="+data.value,async:false,success:function(res){menus = res;}});
+      var optionstring = "";
+      $.each(menus.data, function(i,item){
+          optionstring += "<option value=\"" + item.id + "\" >" + item.str + item.name + "</option>";
+      });
+      $("#menus").html('<option>请选择分类</option>' + optionstring);
+      form.render('select');
+  });
+
+  //多图片上传
+  upload.render({
+    elem: '#test2'
+    ,url: '/admin/index/uploads?use=content'
+    ,multiple: true
+    ,done: function(res){
+      //上传完毕
+      $('#demo2').append('<img src="'+ res.data +'" alt="" class="layui-upload-img" style="max-width:20%;"><input type="hidden" value="'+ res.data +'" name="img[]">');
+    }
+  });
+
+    //拖拽上传
+    upload.render({
+        elem: '#test10'
+        ,url: '/admin/index/uploads?use=content'
+        ,done: function(res){
+            $('#demo10').html('<img src="'+ res.data +'" alt="" class="layui-upload-img" style="max-width:20%;"><input type="hidden" value="'+ res.data +'" name="img">');
+            console.log(res)
+        }
+    });
+  
+  form.on('submit(component-form-demo1)', function(data){
+    tplay.ajax({
+      url:config.domain+"/admin/portal/editContent",
+      data:$('#admin_add').serialize(),
+      success:function(res){
+        layer.msg(res.msg);
+      }
+    })
+    return false;
+  });
+});
+</script>
+<!-- 加载编辑器的容器 -->
+<script id="container" name="content" type="text/plain">
+    
+</script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/static/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container',{
+      initialFrameHeight:300,
+    });
+</script>

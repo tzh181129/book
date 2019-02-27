@@ -1,0 +1,46 @@
+{include file="public/header"}
+    {notempty name="$carousel"}
+    <div class="tplay-index-carousel">
+      <div class="layui-carousel" id="tplay-index-carousel">
+        <div carousel-item="">
+          {volist name="$carousel" id="vo"}
+          <div><a href="{$vo.href}"><img src="{$vo.img}" style="width:100%;height:100%;"></a></div>
+          {/volist}
+        </div>
+      </div>
+    </div>
+    {/notempty}
+    <div class="tplay-auto">
+      <h2 class="tplay-index-h2">Tplay Pro友好</h2>
+      <p class="tplay-index-p">扩展在软件开发领域中扮演的角色越来越重要，一个对开发者友好的内容管理框架，能很大程度地提高团队开发效率</p>
+      <div class="layui-container">
+        <div class="layui-row layui-col-space10">
+          <div class="layui-col-xs3">
+            <div class="tplay-index-block">
+              <h3>Layui</h3>
+              <p>最流行的国产前端UI框架，提供详尽的中文文档、实例，助力开发者极速开发</p>
+            </div>
+          </div>
+          <div class="layui-col-xs3">
+            <div class="tplay-index-block">
+              <h3>ThinkPHP</h3>
+              <p>最流行的国产PHP框架，提供详尽的中文文档、实例，助力开发者极速开发</p>
+            </div>
+          </div>
+          <div class="layui-col-xs3">
+            <div class="tplay-index-block">
+              <h3>Composer</h3>
+              <p>PHP一个第三方库依赖管理工具，让你更方便扩展第三方库</p>
+            </div>
+          </div>
+          <div class="layui-col-xs3">
+            <div class="tplay-index-block">
+              <h3>API</h3>
+              <p>为API开发而设计的内容管理高性能框架，更易快速进行 app,小程序开发</p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+{include file="public/footer"}
+    <script src="__JS__/tplay-index.js"></script>

@@ -1,0 +1,110 @@
+<div class="tplay-body">
+    <div class="layui-tab-content">
+        <div class="tplay-btn">
+            <!-- <blockquote class="layui-elem-quote">支持点击单元格进行编辑修改</blockquote> -->
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="add">新增</button> -->
+            <button class="layui-btn layui-btn-normal" data-type="admin" data-events="add"><i class="layui-icon layui-icon-add-circle"></i>新增配置</button>
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="admin" data-events="del">批量删除</button> -->
+            <button class="layui-btn layui-btn-danger" data-type="admin" data-events="del"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+            <table id="tplay-admin-all" lay-filter="tplay-admin-all">
+              <script type="text/html" id="all_admin_menu">
+                <div class="layui-btn-group">
+                  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit">修改</a>
+                  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del">删除</a>
+                </div>
+              </script>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'element','tplay','apiconfig'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,element = layui.element
+  ,tplay = layui.tplay
+  ,config = layui.apiconfig;
+
+  //管理员
+  table.render({
+    elem: '#tplay-admin-all'
+    ,url: config.domain+'/admin/system/index'
+    ,where: {access_token: layui.data('tplay').access_token}
+    ,page: true
+    ,limit:15
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'key', title: 'key'}
+      ,{field: 'name', title: '名称',edit:'text'}
+      ,{field: 'value', title: '值',edit:'text'}
+      ,{field: 'create_time', title: '创建时间'}
+    ]]
+    ,skin: 'line'
+  });
+
+  //单元格编辑
+  table.on('edit(tplay-admin-all)', function(obj){
+    tplay.ajax({
+      url:config.domain+"/admin/system/edit",
+      type:'post',
+      data:{key:obj.data.key,field:obj.field,value:obj.value},
+      success:function(res){
+        if(res.code !== 1){
+          layer.msg(res.msg);
+        }
+      }
+    })  
+  });
+
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      var array = [];
+      for (var i = 0; i < data.length; i++) {
+         array.push(data[i].key);
+      }
+      layer.confirm('确定删除选中的数据吗？', function(){
+        tplay.ajax({
+          url:config.domain+"/admin/system/del",
+          type:'post',
+          data:{key:array},
+          success:function(res){
+            layer.msg(res.msg);
+            if(res.code == 1){
+              table.reload(thisTabs.id); //刷新表格
+            }
+          }
+        })
+        
+      });
+    }
+    ,add: function(othis, type){
+      location.hash = '#/system/addSystem';
+    }
+  };
+
+  //区分各选项卡中的表格
+  var tabs = {
+    admin: {
+      text: '管理员'
+      ,id: 'tplay-admin-all'
+    },
+    group: {
+      text: '权限组'
+      ,id: 'tplay-admin-group'
+    }
+  };
+  
+  $('.tplay-btn .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+});
+</script>

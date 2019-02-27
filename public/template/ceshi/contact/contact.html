@@ -1,0 +1,40 @@
+        {include file="public/header"}
+    	<div class="tplay-body" style="padding:20px;">
+	        <form class="layui-form" id="tplay-login">
+			  <div class="layui-form-item">
+			      <input type="text" name="name" lay-verify="required" placeholder="称呼" autocomplete="off" class="layui-input">
+			  </div>
+			  <div class="layui-form-item">
+			      <input type="text" name="phone" lay-verify="required" placeholder="电话" autocomplete="off" class="layui-input">
+			  </div>
+              <div class="layui-form-item">
+                  <input type="text" name="email" lay-verify="required" placeholder="邮箱" autocomplete="off" class="layui-input">
+              </div>
+			  <div class="layui-form-item">
+                  <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+			  </div>
+			  <button class="layui-btn" lay-submit lay-filter="tplay-login-submit" id="tplay-login-submit">提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</form>
+		</div>
+		{include file="public/footer"}
+		<script type="text/javascript">
+		    layui.use(['form'], function () {
+		        var form = layui.form,$ = layui.$,apiconfig = layui.apiconfig;
+		        form.on('submit(tplay-login-submit)', function(data) {
+                    $.ajax({
+                        url:"/index/contact/contact",
+                        data:$('#tplay-login').serialize(),
+                        type:'post',
+                        async: false,
+                        success:function(res) {
+                            layer.tips(res.msg,'#tplay-login-submit');
+                            if(res.code == 1) {
+                                $("#tplay-login")[0].reset()
+                            }
+                        }
+                    })
+                    return false;
+                });
+		    });
+		</script>

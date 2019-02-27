@@ -1,0 +1,32 @@
+<div class="fixed_nav" ontouchstart>
+    <div class="top-blank"></div>
+    <div class="top-head" id="headdiv">
+        <div class="top02">
+            <div class="top02_center">
+                <div class="logo"><a href="/"><img class="logo-photo" src="__XYSIMG__/index/logo.png"/></a></div>
+                <div class="nav">
+                    <ul class="navbar">
+                        <li class="index-nav"><img src="__XYSIMG__/index/menu.png" alt=""></li>
+                        {foreach $menu as $vo}
+                        <li id="m1" class="m"><a href="{$vo.href}" {if $vo.is_target eq 1}target="_blank"{/if} class="aa1 mmm">{$vo.name}</a>
+                        {if !empty($vo.list)}
+                            <div class="sub">
+                                <div class="nav_xiao">
+                                    <div class="xiao_three">
+                                        <ul>
+                                            {foreach $vo.list as $v}
+                                            <li><a href="{$v.href}" {if $v.is_target eq 1}target="_blank"{/if}>{$v.name}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
